@@ -258,7 +258,7 @@ class PotvrdaPregleda extends Component {
                 {lista[i].salaN} {lista[i].salaBR}
               </td>
               <td></td>
-              <td></td>
+             
               <td>
                 <OverlayTrigger placement="top" overlay={otkazi}>
                   <Button

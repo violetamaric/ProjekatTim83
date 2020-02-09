@@ -63,13 +63,18 @@ class Pregled extends React.Component {
       datumPregleda: new Date(),
       tipoviPregleda: [],
       tipPregleda: "",
-      terminPregleda: "",
+      terminPregleda: null,
+      terminiPregleda: [],
+
       
 
       //zakazivanje operacije
       zakNovOper: false,
       datumOperacije : new Date(),
       terminOperacije: "",
+      terminiOperacije: [],
+      tipOperacije: "",
+
       
       
     };
@@ -118,6 +123,13 @@ class Pregled extends React.Component {
     this.preuzimanjeTipovaPregleda = this.preuzimanjeTipovaPregleda.bind(this);
     this.izaberiVrstuPregleda = this.izaberiVrstuPregleda.bind(this);
     this.biranjeTipaPregleda = this.biranjeTipaPregleda.bind(this);
+    this.prikazTermina = this.prikazTermina.bind(this);
+    this.biranjeTermina = this.biranjeTermina.bind(this);
+    this.zakaziPregled = this.zakaziPregled.bind(this);
+    this.prikazTerminaOperacije = this.prikazTerminaOperacije.bind(this);
+    this.zakaziOperaciju = this.zakaziOperaciju.bind(this);
+    this.biranjeTerminaOP = this.biranjeTerminaOP.bind(this);
+   
 
   }
 
@@ -135,11 +147,16 @@ class Pregled extends React.Component {
         .then(Response => {
           console.log("Preuzeti termini: ");
           console.log(Response.data);
-          // this.setState({
-          //   tipoviPregleda: Response.data,
-          //   tipPregleda: Response.data[0].naziv
-          // });
-          // console.log(this.state.tipPregleda);
+          this.setState({
+            terminiPregleda: Response.data,
+            // terminPregleda: Response.data[0]
+          },()=>{
+            console.log(this.state.terminiPregleda);
+            console.log(this.state.terminPregleda);
+            this.prikazTermina();
+          }
+            );
+          
         })
   
         .catch(error => {
@@ -155,7 +172,30 @@ class Pregled extends React.Component {
       {
         datumOperacije: date
       },
-      () => console.log(this.state)
+      () => {
+        console.log(this.state);
+        //ovde izlistati termine
+        axios
+        .post("http://localhost:8025/api/pregledi/getTerminiLekaraZaDatum", {datum: this.state.datumOperacije}, this.config)
+        .then(Response => {
+          console.log("Preuzeti termini: ");
+          console.log(Response.data);
+          this.setState({
+            terminiOperacije: Response.data,
+            // terminPregleda: Response.data[0]
+          },()=>{
+            console.log(this.state.terminiOperacije);
+            console.log(this.state.terminOperacije);
+            this.prikazTerminaOperacije();
+          }
+            );
+          
+        })
+  
+        .catch(error => {
+          console.log("Lista tipova nije preuzeta");
+        });
+      }
     );
   };
   handleChange = e => {
@@ -178,6 +218,7 @@ class Pregled extends React.Component {
     this.ucitavanjePacijenta();
     this.ucitavanjePregleda();
     this.preuzimanjeTipovaPregleda();
+
 
     const url = "http://localhost:8025/api/lekari/getLekarByEmail";
 
@@ -710,7 +751,7 @@ class Pregled extends React.Component {
         console.log(Response.data);
         this.setState({
           tipoviPregleda: Response.data,
-          tipPregleda: Response.data[0].naziv
+          tipPregleda: Response.data[0].id
         });
         console.log(this.state.tipPregleda);
       })
@@ -744,43 +785,146 @@ class Pregled extends React.Component {
   }
 
   //za termin
-  // prikazTermina() {
-  //   var res = [];
-  //   if (this.state.prikazTerminaClick == true) {
-  //     res.push(
-  //       <select onChange={e => this.biranjeTermina(e)}>
-  //         <option value="odaberiTermin">Izaberite termin</option>
-  //         {this.state.terminiZaIzabraniDatum[0] == false && (
-  //           <option value="9">09:00 - 11:00</option>
-  //         )}
-  //         {this.state.terminiZaIzabraniDatum[1] == false && (
-  //           <option value="11">11:00 - 13:00</option>
-  //         )}
-  //         {this.state.terminiZaIzabraniDatum[2] == false && (
-  //           <option value="13">13:00 - 15:00</option>
-  //         )}
-  //         {this.state.terminiZaIzabraniDatum[3] == false && (
-  //           <option value="15">15:00 - 17:00</option>
-  //         )}
-  //       </select>
-  //     );
-  //   }
+  prikazTermina() {
+    var res = [];
+    console.log("/************************************************/");
+    console.log(this.state.terminiPregleda);
+    var lista = this.state.terminiPregleda;
+      // if(lista.length === 0){
+      //   res.push(
+      //     <option ></option>
+      //   );
+      // }
+      for(var i = 0; i < lista.length; i++){
+        var kraj = lista[i] + 2;
+        res.push(
+          <option value={lista[i]}>{lista[i] + ":00-" + kraj + ":00"}</option>
+        );
+      }
+      console.log("ucitanooooo")
 
-  //   return res;
-  // }
-  // biranjeTermina = e => {
-  //   console.log(e.target.value);
-  //   const termin = e.target.value;
-  //   console.log("IF");
-  //   this.setState(
-  //     {
-  //       izabranTermin: termin
-  //     },
-  //     () => {
-  //       console.log(this.state.izabranTermin);
-  //     }
-  //   );
-  // };
+
+    return res;
+  }
+  prikazTerminaOperacije() {
+    var res = [];
+    console.log("/************************************************/");
+    console.log(this.state.terminiOperacije);
+    var lista = this.state.terminiOperacije;
+      // if(lista.length === 0){
+      //   res.push(
+      //     <option ></option>
+      //   );
+      // }
+      for(var i = 0; i < lista.length; i++){
+        var kraj = lista[i] + 2;
+        res.push(
+          <option value={lista[i]}>{lista[i] + ":00-" + kraj + ":00"}</option>
+        );
+      }
+      console.log("ucitanooooo")
+
+
+    return res;
+  }
+
+  biranjeTermina = e => {
+    console.log(e.target.value);
+    const termin = e.target.value;
+
+    this.setState(
+      {
+        terminPregleda: termin,
+        
+      },
+      () => {
+        console.log("/************************************************/");
+        console.log(this.state.terminiPregleda);
+        console.log(this.state.terminPregleda);
+      }
+    );
+  };
+  biranjeTerminaOP = e => {
+    console.log(e.target.value);
+    const termin = e.target.value;
+
+    this.setState(
+      {
+        terminOperacije: termin,
+        
+      },
+      () => {
+        console.log("/************************************************/");
+        console.log(this.state.terminiPregleda);
+        console.log(this.state.terminPregleda);
+      }
+    );
+  };
+
+  zakaziPregled(){
+    console.log(this.state.terminPregleda);
+    console.log(this.state.datumPregleda);
+    console.log(this.state.tipPregleda);
+    if(this.state.terminPregleda == null ){
+      this.props.handleClick("NISU SVA POLJA UNESENA")
+    }else{
+    axios
+        .post("http://localhost:8025/api/pregledi/zakazivanjePregledaLekar", {
+          datum: this.state.datumPregleda,
+          termin: this.state.terminPregleda,
+          tipPregledaID: this.state.tipPregleda,
+          pacijentEmail: this.state.pacijent.email
+        }, this.config)
+        .then(Response => {
+          console.log("Preuzeti termini: ");
+          console.log(Response.data);
+          this.props.handleClick("ZAKAZAN PREGLED")
+          this.setState({
+            zakNovPreg: false
+          })
+          
+        }) 
+        .catch(error => {
+          console.log("Lista tipova nije preuzeta");
+        });
+    }
+
+    
+    
+    
+
+
+  }
+
+  zakaziOperaciju(){
+    console.log(this.state.terminOperacije);
+    console.log(this.state.datumOperacije);
+    console.log(this.state.tipOperacije);
+    if(this.state.terminOperacije == null || this.state.tipOperacije == "" || this.state.tipOperacije == null ){
+      this.props.handleClick("NISU SVA POLJA UNESENA")
+    }else{
+    axios
+        .post("http://localhost:8025/api/operacije/zakazivanjeOperacijeLekar", {
+          datum: this.state.datumOperacije,
+          termin: this.state.terminOperacije,
+          tipOperacije: this.state.tipOperacije,
+          pacijentEmail: this.state.pacijent.email
+        }, this.config)
+        .then(Response => {
+          console.log("Preuzeti termini: ");
+          console.log(Response.data);
+          this.props.handleClick("ZAKAZANA OPERACIJA")
+          this.setState({
+            zakNovOper: false
+          })
+          
+        }) 
+        .catch(error => {
+          console.log("Lista tipova nije preuzeta");
+        });
+    }
+  }
+
   render() {
     
 
@@ -1134,6 +1278,9 @@ class Pregled extends React.Component {
                   <Button className="izadjiDugme" 
                     onClick={this.zakNovPregHendler}
                   >Izadji</Button>
+                  <Button className="izadjiDugme" 
+                    onClick={this.zakaziPregled}
+                  >Zakazi pregled</Button>
                   
                   
                 </Col>
@@ -1148,7 +1295,7 @@ class Pregled extends React.Component {
                         <tbody>
                           <tr>
                             <td>
-                              <label>TipPregleda: </label>
+                              <label>Tip Pregleda: </label>
                             </td>
                             <td>
                             <select
@@ -1190,10 +1337,11 @@ class Pregled extends React.Component {
                               <label>Termin: </label>
                             </td>
                             <td>
+                            
                             <select name="odabirKlinike" 
-                             onChange={e => {this.proslediKliniku(e)}}
+                              onChange={e => this.biranjeTermina(e)}
                              >
-                              {/* {this.listaKlinikaIzbor()}  */}
+                              {this.prikazTermina()} 
             
                             </select>
                               
@@ -1218,6 +1366,9 @@ class Pregled extends React.Component {
                   <Button className="izadjiDugme" 
                     onClick={this.zakNovOperHendler}
                   >Izadji</Button>
+                  <Button className="izadjiDugme" 
+                    onClick={this.zakaziOperaciju}
+                  >Zakazi operaciju</Button>
                   
                   
                 </Col>
@@ -1232,41 +1383,37 @@ class Pregled extends React.Component {
                         <tbody>
                           <tr>
                             <td>
-                              <label>TipPregleda: </label>
+                              <label>Tip operacije: </label>
                             </td>
                             <td>
-                              <input
+                            <input
                                 type="text"
-                                name="ime"
-                                defaultValue={this.state.pregled.nazivTP}
-                                disabled="disabled"
-                                // placeholder={this.state.ime}
+                                name="tipOperacije"
+                                // defaultValue={moment(this.state.pregled.datum).format("DD.MM.YYYY. ") + this.state.pregled.termin + ":00" }
+                                // disabled="disabled"
+                                // placeholder={this.state.prezime}
                                 // noValidate
-                                // onChange={this.handleChange}
+                                onChange={this.handleChange}
                               />
+                           
+                              
                             </td>
                           </tr>
                           <tr>
                             <td>
                               <label>Datum: </label>
+                               
+                          
                             </td>
                             <td>
                               <DatePicker
-                                placeholderText="Izaberi datum"
-                                selected={this.state.datumOperacije}
-                                onSelect={this.handleChangeDateOperacije}
-                                minDate={new Date()}
+                              placeholderText="Izaberi datum"
+                              selected={this.state.datumOperacije}
+                              onSelect={this.handleChangeDateOperacije}
+                              minDate={new Date()}
 
-                                />
-                              {/* <input
-                                type="text"
-                                name="prezime"
-                                // defaultValue={moment(this.state.pregled.datum).format("DD.MM.YYYY. ") + this.state.pregled.termin + ":00" }
-                                disabled="disabled"
-                                // placeholder={this.state.prezime}
-                                // noValidate
-                                // onChange={this.handleChange}
-                              /> */}
+                              />
+                              
                             </td>
                           </tr>
                           <tr>
@@ -1274,10 +1421,11 @@ class Pregled extends React.Component {
                               <label>Termin: </label>
                             </td>
                             <td>
+                            
                             <select name="odabirKlinike" 
-                             onChange={e => {this.proslediKliniku(e)}}
+                              onChange={e => this.biranjeTerminaOP(e)}
                              >
-                              {/* {this.listaKlinikaIzbor()}  */}
+                              {this.prikazTerminaOperacije()} 
             
                             </select>
                               
@@ -1352,7 +1500,7 @@ class Pregled extends React.Component {
                      
                       <div 
                       onClick={()=> this.setState({
-                        zakNovPreg : true 
+                        zakNovOper : true 
                       })}
                       >
                           <StatsCard

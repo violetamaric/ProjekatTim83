@@ -1,37 +1,13 @@
 import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
 import { Route, Switch } from "react-router-dom";
-import { Grid, Row, Col, Table } from "react-bootstrap";
 import NotificationSystem from "react-notification-system";
 
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import Footer from "components/Footer/Footer";
 import Sidebar from "components/Sidebar/Sidebar";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
-
 import { style } from "variables/Variables.jsx";
-
 import routes from "routesLekar.js";
-import { Card } from "components/Card/Card.jsx";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import { Tasks } from "components/Tasks/Tasks.jsx";
-import {
-  dataPie,
-  legendPie,
-  dataSales,
-  optionsSales,
-  responsiveSales,
-  legendSales,
-  dataBar,
-  optionsBar,
-  responsiveBar,
-  legendBar
-} from "variables/Variables.jsx";
 import "klinickiCentar.css";
-import UserCard from "components/UserCard/UserCard";
-import slikaKC from "assets/img/klinickiCentar.jpg";
-import axios from "axios";
-import PocetnaStranicaLekara from "./PocetnaStranicaLekara";
 
 class Lekar extends Component {
   constructor(props) {
@@ -83,17 +59,25 @@ class Lekar extends Component {
     var color = 1;
     var level;
     var klasa = "pe-7s-gift";
-    if(position == "ZDRAVSTVENI KARTON JE IZMENJEN" ||
+    if (
+      position == "ZDRAVSTVENI KARTON JE IZMENJEN" ||
       position == "PREGLED JE ZAVRSEN" ||
       position == "ZAHTEV JE POSLAT" ||
-      position ==  "USPESNO PROMENJENA LOZINKA" ||
-      position == "USPESNO PROMENJENI PODACI"){
+      position == "USPESNO PROMENJENA LOZINKA" ||
+      position == "USPESNO PROMENJENI PODACI" ||
+      position == "ZAKAZAN PREGLED" ||
+      position == "ZAKAZANA OPERACIJA"
+    ) {
       color = 1;
       level = "success";
       klasa = "pe-7s-check";
-    }else if(position =="PREGLED JE ZAPOCET"){
+    } else if (position == "PREGLED JE ZAPOCET") {
       color = 4;
       level = "info";
+      klasa = "pe-7s-check";
+    } else if (position == "NISU SVA POLJA UNESENA") {
+      color = 3;
+      level = "error";
       klasa = "pe-7s-check";
     }
     // else{
@@ -118,13 +102,8 @@ class Lekar extends Component {
     //     break;
     // }
     this.state._notificationSystem.addNotification({
-      title: <span data-notify="icon" className={klasa}
-      />,
-      message: (
-        <div>
-          {position}
-        </div>
-      ),
+      title: <span data-notify="icon" className={klasa} />,
+      message: <div>{position}</div>,
       level: level,
       position: "tr",
       autoDismiss: 15

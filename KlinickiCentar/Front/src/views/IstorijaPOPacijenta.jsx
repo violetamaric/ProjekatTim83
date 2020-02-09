@@ -28,7 +28,7 @@ import Dialog from "react-bootstrap-dialog";
 class IstorijaPOPacijenta extends Component {
   constructor(props) {
     super(props);
-    console.log("IZMENA PROFILA Pacijent");
+
     this.state = {
       email: props.email,
       uloga: props.uloga,
@@ -38,13 +38,13 @@ class IstorijaPOPacijenta extends Component {
       formMessage: "",
       lbo: "",
       pregledi: [],
-      operacije:[],
+      operacije: [],
       OnazivKl: "",
       OimeL: "",
       OprezimeL: "",
       OklinikaID: "",
       OlekarID: "",
-      OpregledID:""
+      OpregledID: ""
     };
     this.listaPregleda = this.listaPregleda.bind(this);
     this.listaOperacija = this.listaOperacija.bind(this);
@@ -53,7 +53,6 @@ class IstorijaPOPacijenta extends Component {
     this.ocenjenaKlinika = this.ocenjenaKlinika.bind(this);
     this.ocenjenLekar = this.ocenjenLekar.bind(this);
     this.handleSort = this.handleSort.bind(this);
-
   }
 
   componentWillMount() {
@@ -68,30 +67,26 @@ class IstorijaPOPacijenta extends Component {
     axios
       .get(url, config)
       .then(Response => {
-        console.log("Preuzet pacijent: ");
-        console.log(Response.data);
-
-        this.setState({
-          email: Response.data.email,
-          telefon: Response.data.telefon,
-          adresa: Response.data.adresa,
-          grad: Response.data.grad,
-          drzava: Response.data.drzava,
-          lbo: Response.data.lbo,
-          ime: Response.data.ime,
-          prezime: Response.data.prezime
-        }, ()=>{
-          this.ucitaj();
-        });
-
-
+        this.setState(
+          {
+            email: Response.data.email,
+            telefon: Response.data.telefon,
+            adresa: Response.data.adresa,
+            grad: Response.data.grad,
+            drzava: Response.data.drzava,
+            lbo: Response.data.lbo,
+            ime: Response.data.ime,
+            prezime: Response.data.prezime
+          },
+          () => {
+            this.ucitaj();
+          }
+        );
       })
 
-      .catch(error => {
-        console.log("Pacijent  nije preuzet");
-      });
+      .catch(error => {});
   }
-  ucitaj(){
+  ucitaj() {
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -100,117 +95,88 @@ class IstorijaPOPacijenta extends Component {
       }
     };
     axios
-    .get("http://localhost:8025/api/pregledi/preglediPacijenta", config)
-    .then(res => {
-      console.log(res.data);
-      this.setState({
-        pregledi: res.data.sort((a, b) => b.id - a.id)
-      }, ()=>
-      {
-        axios
-        .get("http://localhost:8025/api/operacije/operacijePacijenta", config)
-        .then(res2 => {
-          console.log('OPERACIJE');
-          console.log(res2.data);
-          this.setState({
-            operacije:res2.data.sort((a,b) => b.id - a.id)
-          }, ()=>{
-            console.log("OPERACIJE")
-            console.log(this.state.operacije)
-          })
-        })
-        .catch(error => {
-          console.log("operacije  nisu preuzete");
-        });
-      });
-    })      
-    .catch(error => {
-      console.log("Pacijent  nije preuzet");
-    });
+      .get("http://localhost:8025/api/pregledi/preglediPacijenta", config)
+      .then(res => {
+        this.setState(
+          {
+            pregledi: res.data.sort((a, b) => b.id - a.id)
+          },
+          () => {
+            axios
+              .get(
+                "http://localhost:8025/api/operacije/operacijePacijenta",
+                config
+              )
+              .then(res2 => {
+                this.setState(
+                  {
+                    operacije: res2.data.sort((a, b) => b.id - a.id)
+                  },
+                  () => {}
+                );
+              })
+              .catch(error => {});
+          }
+        );
+      })
+      .catch(error => {});
   }
   handleSort = sortKriterijum => {
-    console.log(sortKriterijum);
     const lista = this.state.pregledi;
-    
-      if( sortKriterijum == "klinikaUp"){
-        this.setState(
-          {
-            pregledi: lista.sort((a, b) => a.nazivKl.localeCompare(b.nazivKl))
-          });
-      }else if(sortKriterijum == "klinikaDown"){
-        this.setState(
-          {
-            pregledi: lista.sort((b, a) => a.nazivKl.localeCompare(b.nazivKl))
-          }
-        );
-      }else if(sortKriterijum == "lekarUp"){
-        this.setState(
-          {
-            pregledi: lista.sort((a, b) => a.imeL.localeCompare(b.imeL))
-          }
-        );
-      }else if(sortKriterijum == "lekarDown"){
-        this.setState(
-          {
-            pregledi: lista.sort((b, a) => a.imeL.localeCompare(b.imeL))
-          }
-        );
-      }
 
-      else if( sortKriterijum == "tpUp"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>a.nazivTP.localeCompare(b.nazivTP))
-        })
-      }
-
-      else if( sortKriterijum == "tpDown"){
-        this.setState({
-          pregledi:lista.sort((b,a)=>a.nazivTP.localeCompare(b.nazivTP))
-        })
-      }
-
-      else if( sortKriterijum == "cenaUp"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>a.cena - b.cena)
-        })
-      }
-
-      else if( sortKriterijum == "cenaDown"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>b.cena - a.cena)
-        })
-      }
-
-      else if( sortKriterijum == "statusUp"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>a.status - b.status)
-        })
-      }
-
-      else if( sortKriterijum == "statusDown"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>b.status - a.status)
-        })
-      }
-
-      else if( sortKriterijum == "salaUp"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>a.salaID - b.salaID)
-        })
-      }
-
-      else if( sortKriterijum == "salaDown"){
-        this.setState({
-          pregledi:lista.sort((a,b)=>b.salaID - a.salaID)
-        })
-      }
-   
+    if (sortKriterijum == "klinikaUp") {
+      this.setState({
+        pregledi: lista.sort((a, b) => a.nazivKl.localeCompare(b.nazivKl))
+      });
+    } else if (sortKriterijum == "klinikaDown") {
+      this.setState({
+        pregledi: lista.sort((b, a) => a.nazivKl.localeCompare(b.nazivKl))
+      });
+    } else if (sortKriterijum == "lekarUp") {
+      this.setState({
+        pregledi: lista.sort((a, b) => a.imeL.localeCompare(b.imeL))
+      });
+    } else if (sortKriterijum == "lekarDown") {
+      this.setState({
+        pregledi: lista.sort((b, a) => a.imeL.localeCompare(b.imeL))
+      });
+    } else if (sortKriterijum == "tpUp") {
+      this.setState({
+        pregledi: lista.sort((a, b) => a.nazivTP.localeCompare(b.nazivTP))
+      });
+    } else if (sortKriterijum == "tpDown") {
+      this.setState({
+        pregledi: lista.sort((b, a) => a.nazivTP.localeCompare(b.nazivTP))
+      });
+    } else if (sortKriterijum == "cenaUp") {
+      this.setState({
+        pregledi: lista.sort((a, b) => a.cena - b.cena)
+      });
+    } else if (sortKriterijum == "cenaDown") {
+      this.setState({
+        pregledi: lista.sort((a, b) => b.cena - a.cena)
+      });
+    } else if (sortKriterijum == "statusUp") {
+      this.setState({
+        pregledi: lista.sort((a, b) => a.status - b.status)
+      });
+    } else if (sortKriterijum == "statusDown") {
+      this.setState({
+        pregledi: lista.sort((a, b) => b.status - a.status)
+      });
+    } else if (sortKriterijum == "salaUp") {
+      this.setState({
+        pregledi: lista.sort((a, b) => a.salaID - b.salaID)
+      });
+    } else if (sortKriterijum == "salaDown") {
+      this.setState({
+        pregledi: lista.sort((a, b) => b.salaID - a.salaID)
+      });
+    }
   };
   ocenjenaKlinika(h, e, klinikaID, pregledID) {
     h.dialog.hide();
-    console.log(this.state);
-    console.log(e.currentTarget.value);
-    console.log(klinikaID);
+
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -230,18 +196,14 @@ class IstorijaPOPacijenta extends Component {
         config
       )
       .then(response => {
-        console.log(response.data);
         this.props.handleClick("OCENJENA KLINIKA");
         this.ucitaj();
       })
-      .catch(error => {
-        console.log("Izmena nije uspela! ");
-      });
+      .catch(error => {});
   }
   ocenjenLekar(h, e, lekarID, pregledID) {
     h.dialog.hide();
-    console.log(e.currentTarget.value);
-    console.log(lekarID);
+
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -261,23 +223,16 @@ class IstorijaPOPacijenta extends Component {
         config
       )
       .then(response => {
-        console.log(response.data);
         this.props.handleClick("OCENJEN LEKAR");
         this.ucitaj();
-
       })
-      .catch(error => {
-        console.log("Izmena nije uspela! ");
-      });
+      .catch(error => {});
   }
   oceniKliniku = e => {
     let lista = this.state.pregledi;
-    console.log(e.currentTarget.value);
 
     for (var i = 0; i < lista.length; i++) {
-      console.log(lista[i].id);
       if (lista[i].id == e.currentTarget.value) {
-        console.log("equals");
         this.setState(
           {
             OnazivKl: lista[i].nazivKl,
@@ -285,7 +240,7 @@ class IstorijaPOPacijenta extends Component {
             OprezimeL: lista[i].prezimeL,
             OklinikaID: lista[i].klinikaID,
             OlekarID: lista[i].lekarID,
-            OpregledID:lista[i].id
+            OpregledID: lista[i].id
           },
           () => {
             this.dialog.show({
@@ -301,7 +256,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="danger"
                           value="1"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           1
@@ -311,7 +271,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="danger"
                           value="2"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           2
@@ -321,7 +286,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="warning"
                           value="3"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           3
@@ -331,7 +301,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="warning"
                           value="4"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           4
@@ -341,7 +316,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="info"
                           value="5"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           5
@@ -351,7 +331,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="info"
                           value="6"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           6
@@ -361,7 +346,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="info"
                           value="7"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           7
@@ -371,7 +361,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="success"
                           value="8"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           8
@@ -381,7 +376,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="success"
                           value="9"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           9
@@ -391,7 +391,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="success"
                           value="10"
                           onClick={e =>
-                            this.ocenjenaKlinika(this, e, this.state.OklinikaID, this.state.OpregledID)
+                            this.ocenjenaKlinika(
+                              this,
+                              e,
+                              this.state.OklinikaID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           10
@@ -405,7 +410,6 @@ class IstorijaPOPacijenta extends Component {
               bsSize: "medium",
               onHide: dialog => {
                 dialog.hide();
-                console.log("closed by clicking background.");
               }
             });
           }
@@ -415,12 +419,9 @@ class IstorijaPOPacijenta extends Component {
   };
   oceniLekara = e => {
     let lista = this.state.pregledi;
-    console.log(e.currentTarget.value);
 
     for (var i = 0; i < lista.length; i++) {
-      console.log(lista[i].id);
       if (lista[i].id == e.currentTarget.value) {
-        console.log("equals");
         this.setState(
           {
             OnazivKl: lista[i].nazivKl,
@@ -428,7 +429,7 @@ class IstorijaPOPacijenta extends Component {
             OprezimeL: lista[i].prezimeL,
             OklinikaID: lista[i].klinikaID,
             OlekarID: lista[i].lekarID,
-            OpregledID:lista[i].id
+            OpregledID: lista[i].id
           },
           () => {
             this.dialog.show({
@@ -446,7 +447,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="danger"
                           value="1"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           1
@@ -456,7 +462,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="danger"
                           value="2"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           2
@@ -466,7 +477,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="warning"
                           value="3"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           3
@@ -476,7 +492,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="warning"
                           value="4"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           4
@@ -486,7 +507,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="info"
                           value="5"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           5
@@ -496,7 +522,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="info"
                           value="6"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           6
@@ -506,7 +537,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="info"
                           value="7"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           7
@@ -516,7 +552,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="success"
                           value="8"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           8
@@ -526,7 +567,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="success"
                           value="9"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           9
@@ -536,7 +582,12 @@ class IstorijaPOPacijenta extends Component {
                           bsStyle="success"
                           value="10"
                           onClick={e =>
-                            this.ocenjenLekar(this, e, this.state.OlekarID, this.state.OpregledID)
+                            this.ocenjenLekar(
+                              this,
+                              e,
+                              this.state.OlekarID,
+                              this.state.OpregledID
+                            )
                           }
                         >
                           10
@@ -554,7 +605,6 @@ class IstorijaPOPacijenta extends Component {
               bsSize: "medium",
               onHide: dialog => {
                 dialog.hide();
-                console.log("closed by clicking background.");
               }
             });
           }
@@ -564,11 +614,10 @@ class IstorijaPOPacijenta extends Component {
   };
   listaPregleda() {
     let res = [];
-    console.log("lista kl");
 
     // const pretraga = this.state.pretraziPoljeKlinika;
     // const oc = this.state.ocenaKlinike;
-    // console.log(oc);
+    //
     // if ((pretraga == "" || pretraga == undefined) && oc < 5) {
     let lista = this.state.pregledi;
     const oceniK = <Tooltip id="oceni_tooltip">Oceni Kliniku</Tooltip>;
@@ -624,7 +673,7 @@ class IstorijaPOPacijenta extends Component {
             </td>
           </tr>
         );
-      }else if(lista[i].status == 4){
+      } else if (lista[i].status == 4) {
         res.push(
           <tr key={i}>
             <td key={lista[i].nazivKl}>{lista[i].nazivKl}</td>
@@ -634,7 +683,7 @@ class IstorijaPOPacijenta extends Component {
             <td key={lista[i].nazivTP}>{lista[i].nazivTP}</td>
             <td key={lista[i].cena}>{lista[i].cena} RSD</td>
             <td>
-            <i className="pe-7s-like2 text-info" />
+              <i className="pe-7s-like2 text-info" />
             </td>
             <td>
               <OverlayTrigger placement="top" overlay={oceniL}>
@@ -657,7 +706,7 @@ class IstorijaPOPacijenta extends Component {
             </td>
           </tr>
         );
-      }else if(lista[i].status == 5){
+      } else if (lista[i].status == 5) {
         res.push(
           <tr key={i}>
             <td key={lista[i].nazivKl}>{lista[i].nazivKl}</td>
@@ -686,11 +735,11 @@ class IstorijaPOPacijenta extends Component {
               ></Dialog>
             </td>
             <td>
-            <i className="pe-7s-like2 text-info" />
+              <i className="pe-7s-like2 text-info" />
             </td>
           </tr>
         );
-      }else if(lista[i].status == 6){
+      } else if (lista[i].status == 6) {
         res.push(
           <tr key={i}>
             <td key={lista[i].nazivKl}>{lista[i].nazivKl}</td>
@@ -700,18 +749,18 @@ class IstorijaPOPacijenta extends Component {
             <td key={lista[i].nazivTP}>{lista[i].nazivTP}</td>
             <td key={lista[i].cena}>{lista[i].cena} RSD</td>
             <td>
-            <i className="pe-7s-like2 text-info" />
+              <i className="pe-7s-like2 text-info" />
             </td>
             <td>
-            <i className="pe-7s-like2 text-info" />
+              <i className="pe-7s-like2 text-info" />
             </td>
           </tr>
         );
       }
     }
     // } else {
-    //   console.log("===========");
-    //   console.log(pretraga);
+    //
+    //
     //   let lista = this.state.listaKlinika;
 
     //   for (var i = 0; i < lista.length; i++) {
@@ -752,67 +801,61 @@ class IstorijaPOPacijenta extends Component {
 
     return res;
   }
-  ispisLekaraOperacija(operacija){
+  ispisLekaraOperacija(operacija) {
     let lista = this.state.operacije;
     var res = [];
-    operacija.listaLekara.map(lekar=>{
-      res.push
-      (<div>
-        {lekar.ime} {lekar.prezime}
+    operacija.listaLekara.map(lekar => {
+      res.push(
+        <div>
+          {lekar.ime} {lekar.prezime}
         </div>
       );
-    })
+    });
     return res;
   }
-  listaOperacija(){
+  listaOperacija() {
     let res = [];
-    console.log("lista kl");
 
     // const pretraga = this.state.pretraziPoljeKlinika;
     // const oc = this.state.ocenaKlinike;
-    // console.log(oc);
+    //
     // if ((pretraga == "" || pretraga == undefined) && oc < 5) {
     let lista = this.state.operacije;
     const oceniK = <Tooltip id="oceni_tooltip">Oceni Kliniku</Tooltip>;
     const oceniL = <Tooltip id="oceni_tooltip">Oceni Lekara</Tooltip>;
 
     for (var i = 0; i < lista.length; i++) {
-        var rezultat;
-        res.push(
-          <tr key={i}>
+      var rezultat;
+      res.push(
+        <tr key={i}>
           <td key={lista[i].nazivKl}>{lista[i].nazivKl}</td>
           <td>{this.ispisLekaraOperacija(lista[i])}</td>
-           <td key={lista[i].nazivTP}>{lista[i].tipOperacije}</td>
-            <td key={lista[i].cena}>{lista[i].cena} RSD</td>
-            <td>
+          <td key={lista[i].nazivTP}>{lista[i].tipOperacije}</td>
+          <td key={lista[i].cena}>{lista[i].cena} RSD</td>
+          {/* <td>
             <i className="pe-7s-like2 text-info" />
-            </td>
-            <td>
+          </td>
+          <td>
             <i className="pe-7s-like2 text-info" />
-            </td>
-          </tr>
-          );
-        // );
+            </td> */}
+        </tr>
+      );
+      // );
       // }
     }
-   
 
     return res;
   }
   handleChange = e => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
-    console.log(this.state);
-    console.log("On change !!!");
   };
 
   handleSumbit = e => {
     e.preventDefault();
-    console.log("KLIK SUBMITTT");
+
     // let formErrors = { ...this.state.formErrors };
-    console.log("Izmjena : ---------------");
-    console.log(this.state.ime);
-    console.log(this.state.prezime);
+
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -836,8 +879,6 @@ class IstorijaPOPacijenta extends Component {
         config
       )
       .then(response => {
-        console.log(response.data);
-
         this.setState({
           ime: response.data.ime
         });
@@ -858,9 +899,7 @@ class IstorijaPOPacijenta extends Component {
         //   redirectToReferrer: true
         // });
       })
-      .catch(error => {
-        console.log("Izmena nije uspela! ");
-      });
+      .catch(error => {});
   };
 
   render() {
@@ -880,15 +919,16 @@ class IstorijaPOPacijenta extends Component {
           <Row>
             <Col md={12}>
               <Card
-                                        ctTableFullWidth
-                          ctTableResponsive
+                ctTableFullWidth
+                ctTableResponsive
                 title="Pregledi"
                 content={
                   <Table striped hover style={{ width: 800 }}>
                     <thead className="thead-dark">
                       <tr>
-                      <th id="Klinika">Klinika
-                        <i
+                        <th id="Klinika">
+                          Klinika
+                          <i
                             onClick={e => {
                               this.handleSort("klinikaUp");
                             }}
@@ -907,8 +947,9 @@ class IstorijaPOPacijenta extends Component {
                             className="pe-7s-angle-down"
                           />
                         </th>
-                        <th id="Lekar">Lekar
-                        <i
+                        <th id="Lekar">
+                          Lekar
+                          <i
                             onClick={e => {
                               this.handleSort("lekarUp");
                             }}
@@ -927,8 +968,10 @@ class IstorijaPOPacijenta extends Component {
                             className="pe-7s-angle-down"
                           />
                         </th>
-                        <th id="TipPregleda"> Tip Pregleda
-                        <i
+                        <th id="TipPregleda">
+                          {" "}
+                          Tip Pregleda
+                          <i
                             onClick={e => {
                               this.handleSort("tpUp");
                             }}
@@ -947,8 +990,9 @@ class IstorijaPOPacijenta extends Component {
                             className="pe-7s-angle-down"
                           />
                         </th>
-                        <th id="Cena">Cena
-                        <i
+                        <th id="Cena">
+                          Cena
+                          <i
                             onClick={e => {
                               this.handleSort("cenaUp");
                             }}
@@ -976,15 +1020,16 @@ class IstorijaPOPacijenta extends Component {
                 }
               />
               <Card
-                                        ctTableFullWidth
-                          ctTableResponsive
+                ctTableFullWidth
+                ctTableResponsive
                 title="Operacije"
                 content={
                   <Table striped hover style={{ width: 800 }}>
                     <thead className="thead-dark">
                       <tr>
-                        <th id="Klinika">Klinika
-                        <i
+                        <th id="Klinika">
+                          Klinika
+                          <i
                             onClick={e => {
                               this.handleSort("klinikaUp");
                             }}
@@ -1003,8 +1048,9 @@ class IstorijaPOPacijenta extends Component {
                             className="pe-7s-angle-down"
                           />
                         </th>
-                        <th id="Lekar">Lekar
-                        <i
+                        <th id="Lekar">
+                          Lekar
+                          <i
                             onClick={e => {
                               this.handleSort("lekarUp");
                             }}
@@ -1023,8 +1069,10 @@ class IstorijaPOPacijenta extends Component {
                             className="pe-7s-angle-down"
                           />
                         </th>
-                        <th id="TipPregleda"> Tip Pregleda
-                        <i
+                        <th id="TipPregleda">
+                          {" "}
+                          Tip Pregleda
+                          <i
                             onClick={e => {
                               this.handleSort("tpUp");
                             }}
@@ -1043,8 +1091,9 @@ class IstorijaPOPacijenta extends Component {
                             className="pe-7s-angle-down"
                           />
                         </th>
-                        <th id="Cena">Cena
-                        <i
+                        <th id="Cena">
+                          Cena
+                          <i
                             onClick={e => {
                               this.handleSort("cenaUp");
                             }}

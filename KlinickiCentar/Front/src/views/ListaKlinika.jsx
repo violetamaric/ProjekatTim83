@@ -1,38 +1,17 @@
 import React, { Component } from "react";
-import { useState } from "react";
-import {
-  Grid,
-  Row,
-  Col,
-  FormGroup,
-  ControlLabel,
-  FormControl
-} from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import "klinickiCentar.css";
 import { Table } from "react-bootstrap";
-import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
-import { UserCard } from "components/UserCard/UserCard.jsx";
-// import Button from "components/CustomButton/CustomButton.jsx";
 import { ButtonToolbar } from "react-bootstrap";
 import { Button } from "react-bootstrap";
-import { InputGroupButton } from "react-bootstrap";
 import "izmenaProfila.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-//dodam link za sliku  mozda od doktora!!
-// import avatar from "assets/img/faces/face-3.jpg";
 import "login.js";
-import { log } from "util";
-import Login from "login";
-import slikaPacijent from "assets/img/pacijentImage.jpg";
 import axios from "axios";
-import { string } from "prop-types";
-import PocetnaStranicaPacijenta from "./PocetnaStranicaPacijenta";
-import { setHours, setMinutes, subHours, subMinutes } from "date-fns";
 import moment from "moment";
 
 class ListaKlinika extends Component {
@@ -93,6 +72,7 @@ class ListaKlinika extends Component {
     this.prethodno = this.prethodno.bind(this);
     this.prethodno2 = this.prethodno2.bind(this);
     this.odustani = this.odustani.bind(this);
+    this.vidiZaposlene = this.vidiZaposlene.bind(this);
     this.odustani2 = this.odustani2.bind(this);
     this.vidiTermineClick = this.vidiTermineClick.bind(this);
     this.biranjeTermina = this.biranjeTermina.bind(this);
@@ -211,6 +191,9 @@ class ListaKlinika extends Component {
     }
     this.listaLekaraKlinike();
   };
+  vidiZaposlene = e =>{
+    console.log("VIDI ZAPOSLENE" + e.currentTarget.value);
+  }
   listaKlinikaUKC() {
     let res = [];
     console.log("lista kl");
@@ -239,6 +222,7 @@ class ListaKlinika extends Component {
             <td key={lista[i].adresa}>{lista[i].adresa}</td>
             <td key={lista[i].opis}>{lista[i].opis}</td>
             <td key={lista[i].ocena}>{lista[i].ocena}</td>
+            <td><i className="pe-7s-id text-info" value={lista[i].id} onClick={(e)=>this.vidiZaposlene(e)}></i></td>
           </tr>
         );
       }
@@ -275,6 +259,7 @@ class ListaKlinika extends Component {
                 <td key={lista[i].adresa}>{lista[i].adresa}</td>
                 <td key={lista[i].opis}>{lista[i].opis}</td>
                 <td key={lista[i].ocena}>{lista[i].ocena}</td>
+                <td><i className="pe-7s-id text-info" value={lista[i].id} onClick={(e)=>this.vidiZaposlene(e)}></i></td>
               </tr>
             );
           }
@@ -298,13 +283,14 @@ class ListaKlinika extends Component {
     return res;
   }
   vidiTermineClick = e => {
-    e.preventDefault();
+    e.preventDefault(); 
 
-    console.log(e.currentTarget.value);
-    const lekarid = e.currentTarget.value;
-    const url =
+    // console.log(e.target.value);
+
+    var lekarid = e.target.value;
+    var url =
       "http://localhost:8025/api/lekari/listaZauzetostiLekara/" +
-      e.currentTarget.value +
+      lekarid +
       "/" +
       this.state.datumZaPregled;
     var config = {
@@ -375,7 +361,7 @@ class ListaKlinika extends Component {
       .catch(error => {
         console.log("Nisu preuzeti termini lekara");
       });
-  };
+  }
   prikazTermina() {
     var res = [];
     if (this.state.prikazTerminaClick == true) {
@@ -462,10 +448,11 @@ class ListaKlinika extends Component {
                 </Button>
               </OverlayTrigger>
             </td>
+            <td>
             {this.state.lekarTerminClick == lista[i].id && (
-              <td>{this.prikazTermina()}</td>
+              this.prikazTermina()
             )}
-            {this.state.lekarTerminClick != lista[i].id && <td></td>}
+            </td>
           </tr>
         );
       }
@@ -527,7 +514,7 @@ class ListaKlinika extends Component {
                     </Button>
                   </OverlayTrigger>
                 </td>
-                <td>{this.vidiTermineClick()}</td>
+                <td>{this.prikazTermina()}</td>
               </tr>
             );
           }

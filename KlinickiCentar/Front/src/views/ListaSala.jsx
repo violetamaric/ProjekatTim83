@@ -3,11 +3,9 @@ import { Grid, Row, Col, Table } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
 import "klinickiCentar.css";
 import { Button } from "react-bootstrap";
-// import Button from "components/CustomButton/CustomButton.jsx";
 import axios from "axios";
 import Dialog from 'react-bootstrap-dialog';
 import { ButtonToolbar } from "react-bootstrap";
-import IzmenaLekara from 'views/IzmenaProfila.jsx';
 import "klinickiCentar.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -236,7 +234,7 @@ class ListaSala extends Component {
                             axios.get(urlKlinike, config)
                                .then(termini => {
                             
-                                console.log(termini.data);
+                                // console.log(termini.data);
                                   this.setState({
                                       listaTermina: termini.data
                                   }, ()=>{
@@ -660,29 +658,7 @@ handleIzmeni = e => {
                   onChange={this.handleChange}
                 />
               </div>
-              <div className="telefonLekara">
-            <label className="lekarTelefonLabel" htmlFor="telefonLekara">
-              Tip sale:{" "}
-            </label>
-            <select
-              className="lekarTelefonLabel"
-              name="salaID"
-              onChange={this.handleDropdownChangeTipSale}
-              defaultValue=" "
-              disabled="disabled"
-            >
-              <option>
-                
-              </option>
-              <option value={0}> 
-                    Sala za operaciju
-              </option>
-              <option value={1}>
-                    Sala za pregled
-              </option>
-              {/* {this.izaberiSalu()} */}
-            </select>
-          </div>
+            
         
           </form> 
           ],

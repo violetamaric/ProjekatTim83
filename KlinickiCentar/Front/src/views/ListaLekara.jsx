@@ -5,7 +5,6 @@ import "klinickiCentar.css";
 import Button from "components/CustomButton/CustomButton.jsx";
 import axios from "axios";
 import Dialog from "react-bootstrap-dialog";
-import IzmenaLekara from "views/IzmenaProfila.jsx";
 import "klinickiCentar.css";
 import IzmenaProfila from "./IzmenaProfila";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
@@ -32,8 +31,6 @@ class ListaLekara extends Component {
       reirectToIzmeniLekar: false,
       pretraziPoljeKlinika: "",
       listaSalaZaBrisanjeIzmjenu: []
-   
-
     };
     this.listaLekaraUK = this.listaLekaraUK.bind(this);
     this.dodajLekara = this.dodajLekara.bind(this);
@@ -84,11 +81,6 @@ class ListaLekara extends Component {
     );
   }
   listaLekara() {
-    console.log("Ponovo ispisi listu bez obrisanog lekara");
-    console.log("!!!!!!!!!!!!!!!11111 ID KL " + this.state.idKlinike);
-
-    console.log("ID KLINIKE OD KOJE TRAZIM LEKARE: " + this.state.idKlinike);
-    console.log("ucitaj mi kliniku");
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -134,9 +126,7 @@ class ListaLekara extends Component {
   }
   obrisiLekara = e => {
     e.preventDefault();
-    console.log("CLick brisanje lekara");
-    console.log("Lekar kojeg brisem: " + e.target.id);
-    console.log("--------------------------------");
+
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -189,18 +179,20 @@ class ListaLekara extends Component {
           idKlinike: Response.data.idKlinike
         });
         console.log("Ucitaj mi kliniku sa id " + this.state.idKlinike);
-        
-        axios.get('http://localhost:8025/api/lekari/allIBlekari/' +  this.state.idKlinike, config)
-        .then(resp=>{
-          console.log(resp);
-          this.setState({
-            listaSalaZaBrisanjeIzmjenu: resp.data
-          })
-      
-        })
 
-        
-        
+        axios
+          .get(
+            "http://localhost:8025/api/lekari/allIBlekari/" +
+              this.state.idKlinike,
+            config
+          )
+          .then(resp => {
+            console.log(resp);
+            this.setState({
+              listaSalaZaBrisanjeIzmjenu: resp.data
+            });
+          });
+
         console.log("ucitaj mi kliniku");
         const urlKlinike =
           "http://localhost:8025/api/klinike/listaLekaraKlinika/" +
@@ -413,11 +405,11 @@ class ListaLekara extends Component {
     let lis = this.state.listaSalaZaBrisanjeIzmjenu;
     const pretraga = this.state.pretraziPoljeKlinika;
     if (pretraga == "" || pretraga == undefined) {
-     for (var i = 0; i < lista.length; i++) {
-      if(lis.some(item => lista[i].id === item.id)){
+      for (var i = 0; i < lista.length; i++) {
+        if (lis.some(item => lista[i].id === item.id)) {
           res.push(
             <tr key={i}>
-              <td>{lista[i].id}</td>
+          
 
               <td>{lista[i].ime}</td>
               <td>{lista[i].prezime}</td>
@@ -449,7 +441,7 @@ class ListaLekara extends Component {
       }else{
         res.push(
           <tr key={i}>
-            <td>{lista[i].id}</td>
+            
 
             <td>{lista[i].ime}</td>
             <td>{lista[i].prezime}</td>
@@ -472,7 +464,7 @@ class ListaLekara extends Component {
         if(lis.some(item => lista[i].id === item.id)){
           res.push(
             <tr key={i}>
-              <td>{lista[i].id}</td>
+            
     
               <td>{lista[i].ime}</td>
               <td>{lista[i].prezime}</td>
@@ -503,28 +495,81 @@ class ListaLekara extends Component {
         } else{
           res.push(
             <tr key={i}>
-              <td>{lista[i].id}</td>
+              
     
               <td>{lista[i].ime}</td>
               <td>{lista[i].prezime}</td>
               <td>{lista[i].email}</td>
-    
+
               <td>{lista[i].telefon}</td>
-              <td>
-            
-              </td>
-              <td>
-        
-              </td>
+              <td></td>
+              <td></td>
             </tr>
           );
         }
       }
+    } else {
+      for (var i = 0; i < lista.length; i++) {
+        if (
+          lista[i].ime.toLowerCase().includes(pretraga.toLowerCase()) ||
+          lista[i].prezime.toLowerCase().includes(pretraga.toLowerCase())
+        ) {
+          if (lis.some(item => lista[i].id === item.id)) {
+            res.push(
+              <tr key={i}>
+                <td>{lista[i].id}</td>
+
+                <td>{lista[i].ime}</td>
+                <td>{lista[i].prezime}</td>
+                <td>{lista[i].email}</td>
+
+                <td>{lista[i].telefon}</td>
+                <td>
+                  <Button
+                    id={lista[i].email}
+                    onClick={e => this.obrisiLekara(e)}
+                  >
+                    Obrisi
+                  </Button>
+                  <Dialog
+                    ref={el => {
+                      this.dialog = el;
+                    }}
+                  ></Dialog>
+                </td>
+                <td>
+                  <Button
+                    className="OdobrenZahtev"
+                    id={lista[i].email}
+                    onClick={e => this.handleIzmeni(e)}
+                  >
+                    Izmeni
+                  </Button>
+                </td>
+              </tr>
+            );
+          } else {
+            res.push(
+              <tr key={i}>
+                <td>{lista[i].id}</td>
+
+                <td>{lista[i].ime}</td>
+                <td>{lista[i].prezime}</td>
+                <td>{lista[i].email}</td>
+
+                <td>{lista[i].telefon}</td>
+                <td></td>
+                <td></td>
+              </tr>
+            );
+          }
+        }
+      }
     }
-  }
     return res;
   }
-  handleChangePretraga= e => {
+}
+  handleChangePretraga = e => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
 
@@ -556,7 +601,7 @@ class ListaLekara extends Component {
       <div className="content">
         <Grid fluid>
           <Row>
-          <div>
+            <div>
               <h5>
                 <input
                   placeholder="Pretrazi lekare"
@@ -591,7 +636,7 @@ class ListaLekara extends Component {
                       <Table striped hover>
                         <thead>
                           <tr>
-                            <th id="IdPacijenta">Id</th>
+                           
 
                             <th id="ImePacijenta"> Ime</th>
                             <th id="PrezimePacijenta">Prezime</th>

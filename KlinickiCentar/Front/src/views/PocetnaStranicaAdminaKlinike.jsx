@@ -98,9 +98,9 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
           idKlinike: Response.data.idKlinike,
           
         });
-        axios.get('http://localhost:8025/api/pregledi', config)
+        axios.get('http://localhost:8025/api/pregledi/automatska', config)
         .then(res => 
-          {console.log(res)});
+          {console.log(res.data)});
         console.log(this.state);
         console.log("Id klinike: " + this.state.idKlinike);
         console.log("******Id klinike: " + this.state.idKlinike);
@@ -198,7 +198,7 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
   renderRedirect = () => {
     // console.log("aaaaaaa")
     if(this.state.redirectToListaLekara){
-      return <Redirect from="/" to="/admink/lekari"/>;
+      return <Redirect from="/" to="/admink/listaLekara"/>;
     }else  if(this.state.redirectToListaSala){
       console.log("redirect SALA//////////////")
       return <Redirect from="/" to="/admink/Sale"> </Redirect>
@@ -221,33 +221,6 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
   }
 
 
-//   listaPacijenataLekara(){
-//     let res=[];
-//     let lista = this.state.listaPacijenata;
-//     for(var i=0; i< lista.length;i++){
-//       console.log( "Pacijent : "  + lista[i].email);
-//       this.state.emailPacijenta = lista[i].email;
-//       console.log(this.state.emailPacijenta);
-//       res.push(
-       
-//         <tr key = {i}>
-//           {/* <td key={lista[i].id}>{lista[i].id}</td>
-//           <td key={lista[i].naziv}>{lista[i].ime}</td>
-//           <td key={lista[i].adresa}>{lista[i].prezime}</td>
-//           <td key={lista[i].opis}>{lista[i].email}</td> */}
-//           <td key={lista[i].id}>{lista[i].id}</td>
-//           <td>{lista[i].ime}</td>
-//           <td>{lista[i].prezime}</td>
-//           <td key={lista[i].email}>{lista[i].email}</td>
-//           <td onClick={this.handleClick} ><button> Prikazi profil </button></td>
-//           {/* <td><link to="/admin/login">Prikazi profil</link></td> */}
-//          {/* <td key={lista[i].ocena}>{lista[i].ocena}</td> */}
-     
-//          </tr>
-//       )
-//     }
-//     return res;
-//   }
 
 
   render() {
@@ -272,27 +245,7 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
     console.log("////////////////////////////////////////////////////")
 
  
-    // console.log(nazivKlinike);
-    // console.log(telefon);
-    // console.log("Render ps email: " + email);
-    // console.log("Render ps uloga: " + uloga);
-    // console.log("Render ps ime: " + ime);
-    // console.log("Render ps prezime: " + prezime);
-    // console.log("Render ps telefon: " + telefon)
 
-    // if (redirectToProfilPacijenta === true) {
-    //   return (
-    //     <BrowserRouter>
-    //       <Switch>
-    //         <Route
-    //           path="/profilPacijenta"
-    //           render={props => <ProfilPacijenta {...props} emailPacijenta={emailPacijenta} />}
-    //         />
-    //         <Redirect from="/" to="/profilPacijenta" />
-    //       </Switch>
-    //     </BrowserRouter>
-    //   );
-    // }
 
     
     return (
@@ -402,7 +355,7 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
             {this.renderRedirect()}
               <div onClick={this.handleLisaPregleda}>
               <StatsCard
-                bigIcon={<div> <img src = { slikaPregledi} width="30" height="20" /></div>}
+                // bigIcon={<div> <img src = { slikaPregledi} width="30" height="20" /></div>}
                 // statsText="Lista pacijenata"
                 // statsValue="105GB"
                 // statsIcon={<i className="fa fa-refresh" />}
@@ -415,7 +368,7 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
               {this.renderRedirect()}
               <div onClick={this.handleListaLekara}>
               <StatsCard
-                bigIcon={<div> <img src = { Slikalekari} width="30" height="20" /></div>}
+                // bigIcon={<div> <img src = { Slikalekari} width="30" height="20" /></div>}
                 // statsText="Pocetak pregleda"
                 // statsValue="$1,345"
                 // statsIcon={<i className="fa fa-calendar-o" />}
@@ -436,7 +389,7 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
             {this.renderRedirect()}
               <div onClick={this.handleListaSala}>
               <StatsCard
-                bigIcon={<div> <img src = { slikaSala} width="30" height="20" /></div>}
+                //bigIcon={<div> <img src = { slikaSala} width="30" height="20" /></div>}
                 // statsText="Profil korisnika"
                 // statsValue="23"
                 // statsIcon={<i className="fa fa-clock-o" />}
@@ -450,7 +403,7 @@ class PocetnaStranicaAdminaKlinike extends React.Component {
               <div onClick={this.handleSlobodniTermini}>
 
               <StatsCard
-                bigIcon={<div> <img src = { slikaST} width="30" height="20" /></div>}
+                //bigIcon={<div> <img src = { slikaST} width="30" height="20" /></div>}
                 // statsText="Profil korisnika"
                 // statsValue="23"
                 // statsIcon={<i className="fa fa-clock-o" />}

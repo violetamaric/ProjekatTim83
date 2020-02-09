@@ -1,27 +1,6 @@
 import React, { Component } from "react";
-import {
-  Grid,
-  Row,
-  Col,
-  FormGroup,
-  ControlLabel,
-  FormControl
-} from "react-bootstrap";
-import { NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
-import { Table } from "react-bootstrap";
-import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
-import { Form } from "react-bootstrap";
+import { Grid, Row, Col } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
-import { FormInputs } from "components/FormInputs/FormInputs.jsx";
-import { UserCard } from "components/UserCard/UserCard.jsx";
-import Button from "components/CustomButton/CustomButton.jsx";
-// import "izmenaProfila.css";
-
-//dodam link za sliku  mozda od doktora!!
-// import avatar from "assets/img/faces/face-3.jpg";
-
-import { log } from "util";
-import slikaPacijent from "assets/img/pacijentImage.jpg";
 import axios from "axios";
 import moment from "moment";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
@@ -52,57 +31,42 @@ class PregledKlinika extends Component {
     this.handlePrikaziZaposlene = this.handlePrikaziZaposlene.bind(this);
   }
   sortMyArray(sortBy) {
-    console.log("sort funkcija");
-    console.log(sortBy);
     const lista = this.state.listaPregleda;
     if (sortBy === "klinika") {
-      console.log("klinika");
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.klinikaN.localeCompare(b.klinikaN)
         )
       });
     } else if (sortBy === "lekarI") {
-      console.log("lekarI");
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.lekarIme.localeCompare(b.lekarIme)
         )
       });
     } else if (sortBy === "lekarP") {
-      console.log("lekarP");
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.lekarPrezime.localeCompare(b.lekarPrezime)
         )
       });
     } else if (sortBy === "cenar") {
-      console.log("cenar");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => a.cena - b.cena)
       });
     } else if (sortBy === "cenao") {
-      console.log("cenao");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => b.cena - a.cena)
       });
     } else if (sortBy === "popustr") {
-      console.log("popustr");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => a.popust - b.popust)
       });
     } else if (sortBy === "popusto") {
-      console.log("popusto");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => b.popust - a.popust)
       });
     } else if (sortBy === "tipPregleda") {
-      console.log("tipPregleda");
-
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.tipPregledaN.localeCompare(b.tipPregledaN)
@@ -123,107 +87,82 @@ class PregledKlinika extends Component {
     axios
       .get(url, config)
       .then(Response => {
-        console.log("Preuzeta lista klinika: ");
-        console.log(Response.data);
         this.setState({
           listaKlinika: Response.data
         });
-        console.log(this.state.listaKlinika);
       })
 
-      .catch(error => {
-        console.log("klinike nisu preuzete");
-      });
+      .catch(error => {});
   }
   handleSortKlinika(sortBy) {
-    console.log("sort funkcija");
-    console.log(sortBy);
     const lista = this.state.listaPregleda;
     if (sortBy === "datumUp") {
-      console.log("datum");
       this.setState({
         listaPregleda: lista.sort((a, b) => {
           return new Date(a.datum).getTime() - new Date(b.datum).getTime();
         })
       });
     } else if (sortBy === "datumDown") {
-      console.log("datum");
       this.setState({
         listaPregleda: lista.sort((b, a) => {
           return new Date(a.datum).getTime() - new Date(b.datum).getTime();
         })
       });
     } else if (sortBy === "tipPregledaUp") {
-      console.log("tipPregleda");
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.tipPregledaN.localeCompare(b.tipPregledaN)
         )
       });
     } else if (sortBy === "tipPregledaDown") {
-      console.log("tipPregleda");
       this.setState({
         listaPregleda: lista.sort((b, a) =>
           a.tipPregledaN.localeCompare(b.tipPregledaN)
         )
       });
     } else if (sortBy === "klinikaUp") {
-      console.log("klinika");
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.klinikaN.localeCompare(b.klinikaN)
         )
       });
     } else if (sortBy === "klinikaDown") {
-      console.log("klinika");
       this.setState({
         listaPregleda: lista.sort((b, a) =>
           a.klinikaN.localeCompare(b.klinikaN)
         )
       });
     } else if (sortBy === "lekarUp") {
-      console.log("lekar");
       this.setState({
         listaPregleda: lista.sort((a, b) =>
           a.lekarIme.localeCompare(b.lekarIme)
         )
       });
     } else if (sortBy === "lekarDown") {
-      console.log("lekar");
       this.setState({
         listaPregleda: lista.sort((b, a) =>
           a.lekarIme.localeCompare(b.lekarIme)
         )
       });
     } else if (sortBy === "cenaUp") {
-      console.log("cena");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => a.cena - b.cena)
       });
     } else if (sortBy === "cenaDown") {
-      console.log("cena");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => b.cena - a.cena)
       });
     } else if (sortBy === "popustUp") {
-      console.log("popust");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => a.popust - b.popust)
       });
     } else if (sortBy === "popustDown") {
-      console.log("popust");
-
       this.setState({
         listaPregleda: lista.sort((a, b) => b.popust - a.popust)
       });
     }
   }
   promenjenOdabirPregleda = e => {
-    console.log("promenjen odabrir");
-    console.log(e.currentTarget.value);
     const lista = this.state.listaPregleda;
     for (var i = 0; i < lista.length; i++) {
       if (lista[i].id == e.currentTarget.value) {
@@ -239,12 +178,11 @@ class PregledKlinika extends Component {
         });
       }
     }
-    console.log(this.state);
   };
   odabranPrelged = e => {
     //treba redirektovati na pretragu i filtriranje lekara
     e.preventDefault();
-    console.log(this.state.izabranPregled);
+
     const ol = this.state.izabranPregled;
     var config = {
       headers: {
@@ -270,33 +208,24 @@ class PregledKlinika extends Component {
           config
         )
         .then(response => {
-          console.log("PREGLED");
-          console.log(response);
           this.setState({
             redirectNext: true,
             flag: 1
           });
         })
-        .catch(error => {
-          console.log("greska pregled");
-          console.log(error.response);
-        });
+        .catch(error => {});
     } else {
-      this.setState(
-        {
-          formError: "Odaberite Pregled"
-        },
-        () => console.log(this.state.formError)
-      );
+      this.setState({
+        formError: "Odaberite Pregled"
+      });
     }
   };
   listaUnapredDefinisanihPregleda() {
     let res = [];
-    console.log("lista kl");
 
     // const pretraga = this.state.pretraziPoljeKlinika;
     // const oc = this.state.ocenaKlinike;
-    // console.log(oc);
+    //
     // if ((pretraga == "" || pretraga == undefined) && oc < 5) {
     let lista = this.state.listaPregleda;
 
@@ -330,8 +259,8 @@ class PregledKlinika extends Component {
       );
     }
     // } else {
-    //   console.log("===========");
-    //   console.log(pretraga);
+    //
+    //
     //   let lista = this.state.listaKlinika;
 
     //   for (var i = 0; i < lista.length; i++) {
@@ -375,11 +304,8 @@ class PregledKlinika extends Component {
   handleChange = e => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
-    console.log(this.state);
-    console.log("On change !!!");
   };
   handlePrikaziZaposlene = kl => {
-    console.log(kl);
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -388,31 +314,22 @@ class PregledKlinika extends Component {
       }
     };
     axios
-      .get(
-        "http://localhost:8025/api/klinike/listaLekaraKlinika/" +
-          kl,
-        config
-      )
+      .get("http://localhost:8025/api/klinike/listaLekaraKlinika/" + kl, config)
       .then(Response => {
-        console.log("Preuzeta lista lekara: ");
-        console.log(Response.data);
         this.setState({
           listaLekara: Response.data
         });
-        console.log(this.state.listaLekara);
       })
 
-      .catch(error => {
-        console.log("lekari nisu preuzete");
-      });
+      .catch(error => {});
   };
   // handleSumbit = e => {
   //   e.preventDefault();
-  //   console.log("KLIK SUBMITTT");
+  //
   //   // let formErrors = { ...this.state.formErrors };
-  //   console.log("Izmjena : ---------------");
-  //   console.log(this.state.ime);
-  //   console.log(this.state.prezime);
+  //
+  //
+  //
   //   axios
   //     .put("http://localhost:8025/api/pacijenti/update", {
   //       ime: this.state.ime,
@@ -425,7 +342,7 @@ class PregledKlinika extends Component {
   //       lbo: this.state.lbo
   //     })
   //     .then(response => {
-  //       console.log(response.data);
+  //
 
   //       this.setState({
   //         ime: response.data.ime
@@ -448,7 +365,7 @@ class PregledKlinika extends Component {
   //       // });
   //     })
   //     .catch(error => {
-  //       console.log("Izmena nije uspela! ");
+  //
   //     });
   // };
   //   redirectReferer() {

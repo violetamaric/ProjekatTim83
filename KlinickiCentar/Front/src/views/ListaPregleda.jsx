@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import { Grid, Row, Col, Table } from "react-bootstrap";
 import { Card } from "components/Card/Card.jsx";
 import "klinickiCentar.css";
-import Button from "components/CustomButton/CustomButton.jsx";
 import axios from "axios";
 import Dialog from "react-bootstrap-dialog";
-import IzmenaLekara from "views/IzmenaProfila.jsx";
 import "klinickiCentar.css";
 import moment from "moment";
 
@@ -161,7 +159,6 @@ class ListaPregleda extends Component {
           });
           console.log("++++++++++++++++++ Id k: " + this.state.idKlinike);
 
-          console.log("Preuzmi mi sale za tu kliniku");
           const urlKlinike =
             "http://localhost:8025/api/pregledi/preuzmiPregledeKlinike/" +
             this.state.idKlinike;
@@ -174,10 +171,10 @@ class ListaPregleda extends Component {
               listaLekara: klinika.data.sort((a, b) => {
                 let startA = new Date(a.datum);
                 startA.setHours(a.termin);
-      
+
                 let startB = new Date(b.datum);
                 startB.setHours(b.termin);
-      
+
                 return new Date(startA).getTime() - new Date(startB).getTime();
               }),
               pregledLekarID: klinika.data.lekarID,
@@ -335,13 +332,14 @@ class ListaPregleda extends Component {
   listaSalaK() {
     let res = [];
     let lista = this.state.listaLekara;
-  
+
     for (var i = 0; i < lista.length; i++) {
       const dat = lista[i].datum;
       res.push(
         <tr key={i}>
           <td>
-            {moment(dat).format("DD.MM.YYYY.")} {lista[i].termin}:00 h -  {lista[i].termin + 2}  : 00 h
+            {moment(dat).format("DD.MM.YYYY.")} {lista[i].termin}:00 h -{" "}
+            {lista[i].termin + 2} : 00 h
           </td>
           <td>{lista[i].nazivTP}</td>
           <td>
@@ -390,39 +388,37 @@ class ListaPregleda extends Component {
     return (
       <div className="content">
         <Grid fluid>
-          
-              <Row>
-                <Card
-                  title="Lista pregleda klinike"
-                  // category="Here is a subtitle for this table"
-                  ctTableFullWidth
-                  ctTableResponsive
-                  content={
-                    <div>
-                      {/* <Button className="DodajKlinikuDugme"  onClick={e => this.dodajLekara(e)}>Dodaj novi termin za pregled</Button>
+          <Row>
+            <Card
+              title="Lista pregleda klinike"
+              // category="Here is a subtitle for this table"
+              ctTableFullWidth
+              ctTableResponsive
+              content={
+                <div>
+                  {/* <Button className="DodajKlinikuDugme"  onClick={e => this.dodajLekara(e)}>Dodaj novi termin za pregled</Button>
                     <Dialog ref={(el) => { this.dialog = el }} ></Dialog>
                      */}
 
-                      <Table striped hover>
-                        <thead>
-                          <tr>
-                            <th id="IdPacijenta">Datum i vreme</th>
-                            <th id="ImePacijenta">Tip pregleda</th>
+                  <Table striped hover>
+                    <thead>
+                      <tr>
+                        <th id="IdPacijenta">Datum i vreme</th>
+                        <th id="ImePacijenta">Tip pregleda</th>
 
-                            <th id="lekar">Lekar</th>
+                        <th id="lekar">Lekar</th>
 
-                            <th id="pacijent">Pacijent</th>
+                        <th id="pacijent">Pacijent</th>
 
-                            <th id="cena">Cena</th>
-                          </tr>
-                        </thead>
-                        <tbody>{this.listaSalaK()}</tbody>
-                      </Table>
-                    </div>
-                  }
-                />
-              </Row>
-        
+                        <th id="cena">Cena</th>
+                      </tr>
+                    </thead>
+                    <tbody>{this.listaSalaK()}</tbody>
+                  </Table>
+                </div>
+              }
+            />
+          </Row>
         </Grid>
       </div>
     );

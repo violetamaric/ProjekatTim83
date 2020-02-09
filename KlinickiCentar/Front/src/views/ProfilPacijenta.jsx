@@ -1,34 +1,13 @@
-
 import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
-import { Grid, Row, Col } from "react-bootstrap";
-
 import { Card } from "components/Card/Card.jsx";
-import { UserCard } from "components/UserCard/UserCard.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import { Tasks } from "components/Tasks/Tasks.jsx";
 import axios from "axios";
-import {
-  dataPie,
-  legendPie,
-  dataSales,
-  optionsSales,
-  responsiveSales,
-  legendSales,
-  dataBar,
-  optionsBar,
-  responsiveBar,
-  legendBar
-} from "variables/Variables.jsx";
 import slikaPacijent from "assets/img/pacijentImage.jpg";
-import Login from "login.js";
 
 class ProfilPacijenta extends React.Component {
   constructor(props) {
-    console.log("PROFIL PACIJENTA")
     super(props);
-    console.log(this.props);
-    console.log(props.emailPacijenta);
+
     this.state = {
       email: props.emailPacijenta,
       uloga: props.uloga,
@@ -41,19 +20,17 @@ class ProfilPacijenta extends React.Component {
       brojOsiguranika: "",
       lozinka: ""
     };
-    console.log("MEJL : " + this.state.email);
   }
   componentWillMount() {
-    console.log("treba get zahtev da se iskuca");
     const email = this.state.email;
-    console.log(email);
 
     axios
-      .get("http://localhost:8025/api/pacijenti/findPacijentEmail/" + this.state.email)
+      .get(
+        "http://localhost:8025/api/pacijenti/findPacijentEmail/" +
+          this.state.email
+      )
 
       .then(Response => {
-        console.log("URL 111");
-        console.log(Response);
         this.setState({
           email: Response.data.email,
           ime: Response.data.ime,
@@ -64,17 +41,13 @@ class ProfilPacijenta extends React.Component {
           drzava: Response.data.drzava,
           lbo: Response.data.lbo
         });
-        console.log(this.state);
       })
-      .catch(error => {
-        console.log("nije uspeo url1");
-        console.log(error);
-      });
+      .catch(error => {});
   }
 
   // componentDidMount() {
-  //   console.log("in mount component $$$$$$$$$$$$$$$$$$$$$");
-  //   console.log(this.props);
+  //
+  //
   // }
   createLegend(json) {
     var legend = [];
@@ -96,7 +69,7 @@ class ProfilPacijenta extends React.Component {
     const grad = this.state.grad;
     const drzava = this.state.drzava;
     const lbo = this.state.lbo;
-    console.log(this.props);
+
     return (
       <div className="content">
         <Grid fluid>

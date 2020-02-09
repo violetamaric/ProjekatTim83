@@ -347,7 +347,7 @@ class ZdravstveniKarton extends Component {
                               </td>
                               <td>{izvestaj.sadrzaj}</td>
                               <td>
-                                {Object.entries(izvestaj.recepti).map(
+                                {/* {Object.entries(izvestaj.recepti).map(
                                   (key, value) => {
                                     console.log(key);
                                     console.log(value);
@@ -357,9 +357,9 @@ class ZdravstveniKarton extends Component {
                                       </div>
                                     );
                                   }
-                                )}
+                                )} */}
 
-                                {/* {izvestaj.listaRecepata.map(recept => {
+                                {/* {izvestaj.recepti.map(recept => {
                                   return (
                                     <div>
                                       {recept.lek.overen && (

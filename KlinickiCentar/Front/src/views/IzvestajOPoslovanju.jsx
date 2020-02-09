@@ -789,7 +789,7 @@ class IzvestajOPoslovanju extends Component {
               <Col md={4}>
                 <Card
                   // statsIcon="fa fa-clock-o"
-                  title="Administator klinike"
+                  title="Klinika"
                   // category="Ime"
                   content={
                     <div id="a">

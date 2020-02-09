@@ -64,14 +64,15 @@ const dashboardRoutes = [
     icon: "pe-7s-check",
     component: PotvrdaPregleda,
     layout: "/pacijent"
-  },
-  {
-    path: "/pregledKlinika",
-    name: "Pregled Klinika",
-    icon: "pe-7s-bell",
-    component: PregledKlinika,
-    layout: "/pacijent"
   }
+  // ,
+  // {
+  //   path: "/pregledKlinika",
+  //   name: "Pregled Klinika",
+  //   icon: "pe-7s-bell",
+  //   component: PregledKlinika,
+  //   layout: "/pacijent"
+  // }
 ];
 
 export default dashboardRoutes;

@@ -7,9 +7,7 @@ import slikaKC from "assets/img/klinickiCentar.jpg";
 import Button from "components/CustomButton/CustomButton.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import Dialog from 'react-bootstrap-dialog';
-// import Form, { Input, Fieldset } from 'react-bootstrap-form';
-// import { render } from 'react-dom';
-// import ReactDOM from 'react-dom'
+
 
 
 class KlinickiCentarPocetna extends Component {
@@ -666,10 +664,8 @@ class KlinickiCentarPocetna extends Component {
                 Dialog.CancelAction(),
                 Dialog.OKAction(()=> {
                  
-                      console.log("Izmjena klinike: ---------------")  
-                      console.log(this.state.naziv);
-                      console.log(this.state.idKlinike);
-                      console.log(this.state.id);
+                    
+                      
                     axios
                       .put("http://localhost:8025/api/klinike/update", {
                         id: this.state.idIzmenjeneKlinike,
@@ -680,15 +676,11 @@ class KlinickiCentarPocetna extends Component {
                       }, this.config)
                       .then(response => {
                         console.log(response.data);
-                        this.listaKlinika();
+                        this.setState({
+                          listaKlinika: response.data
+                        }, ()=> this.listaKlinika())
+                        
 
-                        // this.setState({
-                        //   id: response.data.id,
-                        //   naziv: response.data.naziv,
-                        //   adresa: response.data.adresa,
-                        //   ocena: response.data.ocena,
-                        //   opis: response.data.opis
-                        // });
                       })
                       .catch(error => {
                         console.log("Izmena nije uspela! ")
@@ -738,8 +730,7 @@ class KlinickiCentarPocetna extends Component {
           imeIzmenjenogAK: Response.data.ime,
           prezimeIzmenjenogAK: Response.data.prezime,
           telefonIzmenjenogAK: Response.data.telefon,
-          // lozinkaIzmenjenogAK: Response.date.lozinka,
-          // klinikaIzmenjenogAK: Response.date.idKlinike
+         
         }, 
         ()=> this.dialog.show({
           title: 'Izmena administratora klinike',
@@ -776,25 +767,7 @@ class KlinickiCentarPocetna extends Component {
                   //onChange={this.handleChange}
                 />
               </div>
-              <div className="lozinkaNAK" >
-                <label className="lozinkaNAKLabel" htmlFor="lozinkaNAK">Lozinka: </label>
-                <input className="lozinkaNAKInput"
-                  type="password"
-                  name="lozinkaIzmenjenogAK"
-                  defaultValue={Response.data.lozinka}
-                  onChange={this.handleChange}
-                />
-                {/* <div className="checkbox">
-                  <input
-                    id="check"
-                    type="checkbox"
-                    onChange={this.handleCheckBox}
-                    checked={this.state.is_checked}
-                         
-                  />
-                  <label htmlFor="check">prikazi lozinku</label>
-                </div>  */}
-              </div>
+             
               <div className="telefonNAK" >
                 <label className="telefonNAKLabel" htmlFor="telefonNAK">Telefon: </label>
                 <input className="telefonNAKInput"
@@ -804,20 +777,7 @@ class KlinickiCentarPocetna extends Component {
                   onChange={this.handleChange}
                 />
               </div>
-              <div className="klinikaNAK" >
-                <label className="klinikaNAKLabela" htmlFor="klinikaNAK">Klinika: </label> 
-                <div>
-                  <select 
-                    name="odabirKlinike" 
-                    // defaultValue={this.state.klinikaIzmenjenogAK}
-                    onChange={e => {this.proslediKlinikuIzmena(e)}}
-                   >
-                    {this.listaKlinikaIzbor()} 
-                  
-                  </select>
-                  
-                </div>
-              </div>
+             
           
             </form>
           ],
@@ -882,7 +842,7 @@ class KlinickiCentarPocetna extends Component {
         prezimeIzmenjenogAKC: Response.data.prezime,
         lozinkaIzmenjenogAKC: Response.data.lozinka
       },() =>this.dialog.show({
-        title: 'Izmena klinike',
+        title: 'Izmena administratora klinickog centra',
         body: [
           
           <form className="formaIzmenaProfilaLekara">
@@ -921,17 +881,7 @@ class KlinickiCentarPocetna extends Component {
                         onChange={this.handleChange}
                       />
                     </div> 
-                  <div className="lozinka">
-                      <label htmlFor="lozinka">Lozinka: </label>
-                      <input
-                        type="password"
-                        name="lozinkaIzmenjenogAKC"
-                        defaultValue={this.state.lozinkaIzmenjenogAKC}
-                        // placeholder={this.state.adresa}
-                        // noValidate
-                        onChange={this.handleChange}
-                      />
-                    </div>
+                 
             </form>
         ],
         actions: [

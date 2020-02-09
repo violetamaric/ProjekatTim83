@@ -1,43 +1,16 @@
 import React, { Component } from "react";
-import ChartistGraph from "react-chartist";
 import { Route, Switch } from "react-router-dom";
-import { Grid, Row, Col, Table } from "react-bootstrap";
 import NotificationSystem from "react-notification-system";
-
 import AdminNavbar from "components/Navbars/AdminNavbar";
 import Footer from "components/Footer/Footer";
 import Sidebar from "components/Sidebar/Sidebar";
-import FixedPlugin from "components/FixedPlugin/FixedPlugin.jsx";
-
 import { style } from "variables/Variables.jsx";
-
 import routes from "routesAdminK";
-import { Card } from "components/Card/Card.jsx";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import { Tasks } from "components/Tasks/Tasks.jsx";
-import {
-  dataPie,
-  legendPie,
-  dataSales,
-  optionsSales,
-  responsiveSales,
-  legendSales,
-  dataBar,
-  optionsBar,
-  responsiveBar,
-  legendBar
-} from "variables/Variables.jsx";
 import "klinickiCentar.css";
-import UserCard from "components/UserCard/UserCard";
-import slikaKC from "assets/img/klinickiCentar.jpg";
-import axios from "axios";
-import PocetnaStranicaAdminaKlinike from "./PocetnaStranicaAdminaKlinike";
-import Geocode from "react-geocode";
+
 class AdministatorKlinike extends Component {
   constructor(props) {
     super(props);
-    console.log("Konsturkotr od Admina klinike");
-    console.log("PROPS PRINT OD AK: " + this.props);
     this.state = {
       uloga: props.uloga,
       email: props.email,
@@ -49,8 +22,6 @@ class AdministatorKlinike extends Component {
       hasImage: true,
       fixedClasses: "dropdown show-dropdown open"
     };
-    // console.log(this.state.uloga);
-    console.log(this.state.token);
   }
 
   getRoutes = routes => {
@@ -126,8 +97,6 @@ class AdministatorKlinike extends Component {
   handleNotificationClick = poruka => {
     var color = 1;
     var level;
-    console.log("handle not click");
-    console.log("PORUKA: ", poruka);
     var klasa = "pe-7s-gift";
     if (
       poruka == "USPESNA IZMENA" ||
@@ -136,7 +105,7 @@ class AdministatorKlinike extends Component {
       poruka == "OCENJENA KLINIKA" ||
       poruka == "ZAHTEV JE POSLAT" ||
       poruka == "USPESNA REZERVACIJA"
-      ) {
+    ) {
       level = "success";
       klasa = "pe-7s-check";
     } else if (poruka == "ZAHTEV JE ODBIJEN") {
@@ -184,7 +153,6 @@ class AdministatorKlinike extends Component {
     }
   };
   componentWillMount() {
-    console.log("WILL MOUNT");
     if (this.state.email == "" || this.state.email == undefined) {
       this.setState({
         email: JSON.parse(localStorage.getItem("email") || "{}"),
@@ -193,11 +161,8 @@ class AdministatorKlinike extends Component {
     }
   }
   componentDidMount() {
-    console.log("-----------------------");
-    console.log("DID MOUNT");
     localStorage.setItem("email", JSON.stringify(this.state.email));
     localStorage.setItem("token", JSON.stringify(this.state.token));
-    console.log(this.refs);
     this.setState({ _notificationSystem: this.refs.notificationSystem });
     var _notificationSystem = this.refs.notificationSystem;
     var color = 4;
@@ -246,45 +211,42 @@ class AdministatorKlinike extends Component {
     });
   };
 
+  // getData(){
+  //   Geocode.setApiKey("AIzaSyBO8lOU4v5gC2H64p7I4l9zZrkgq_dJ9rk");
+  //   // Get address from latidude & longitude.
+  // Geocode.fromLatLng("48.8583701", "2.2922926").then(
+  //   response => {
+  //     const address = response.results[0].formatted_address;
+  //
+  //   },
+  //   error => {
+  //     console.error(error);
+  //   }
+  // );
 
-// getData(){
-//   Geocode.setApiKey("AIzaSyBO8lOU4v5gC2H64p7I4l9zZrkgq_dJ9rk");
-//   // Get address from latidude & longitude.
-// Geocode.fromLatLng("48.8583701", "2.2922926").then(
-//   response => {
-//     const address = response.results[0].formatted_address;
-//     console.log(address);
-//   },
-//   error => {
-//     console.error(error);
-//   }
-// );
-
-// // Get latidude & longitude from address.
-// Geocode.fromAddress("Bulevar Oslobodjenja 67").then(
-//   response => {
-//     console.log("dasdsadasdasdsadas nananaa ananananna aana **-* -*- *- ")
-//     console.log(response);
-//     const { lat, lng } = response.results[0].geometry.location;
-//     console.log(lat, lng);
-//   },
-//   error => {
-//     console.error(error);
-//   }
-// );
-// }
+  // // Get latidude & longitude from address.
+  // Geocode.fromAddress("Bulevar Oslobodjenja 67").then(
+  //   response => {
+  //
+  //
+  //     const { lat, lng } = response.results[0].geometry.location;
+  //
+  //   },
+  //   error => {
+  //     console.error(error);
+  //   }
+  // );
+  // }
 
   render() {
     const email = this.state.email;
     const uloga = this.state.uloga;
-    console.log("Render email: " + email);
-    console.log("Render uloga: " + uloga);
     return (
       <div className="wrapper">
         <NotificationSystem ref="notificationSystem" style={style} />
         <Sidebar
           {...this.props}
-         // getData={this.getData()}
+          // getData={this.getData()}
           routes={routes}
           email={this.state.email}
           uloga={this.state.uloga}
@@ -295,9 +257,7 @@ class AdministatorKlinike extends Component {
         <div id="main-panel" className="main-panel" ref="mainPanel">
           <AdminNavbar
             {...this.props}
-            
             brandText={this.getBrandText(this.props.location.pathname)}
-            
           />
 
           {/* <PocetnaStranicaLekara  email={email} uloga={uloga} /> */}
