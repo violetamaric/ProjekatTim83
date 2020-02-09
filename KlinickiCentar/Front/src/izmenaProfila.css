@@ -1,0 +1,39 @@
+/* label {
+    font-size: 0.8em;
+    margin-bottom: 0.25em;
+    color: #222;
+    font-weight: 900;
+    width: 200vh;
+  } */
+
+.email,
+.ime,
+.prezime,
+.telefon,
+.gKlinika,
+.lbo,
+.visina,
+.tezina,
+.krvnaGrupa,
+.brTelefona,
+.izmeniPodatkeMedSestri {
+  width: 100%;
+}
+
+.klinikaK {
+  width: 650px;
+  height: 54px;
+}
+
+.izmeniPodatkeLekar button {
+  background-color: #519e8a;
+  color: rgb(0, 0, 0);
+  border: 2px solid rgb(124, 117, 117);
+  width: 650px;
+  margin-top: 1em;
+  padding: 8px 0px;
+  font-size: 1em;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  margin-bottom: 0.25em;
+}

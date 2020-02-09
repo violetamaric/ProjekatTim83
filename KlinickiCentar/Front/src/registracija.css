@@ -1,0 +1,158 @@
+/* Colors */
+/*
+dark blue: #476A6F
+light blue: #258EA6
+dark green: #519E8A
+medium green: #7EB09B
+light green: #A3C4BC
+*/
+
+.logForm {
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* background-color: #258ea6; */
+
+  background-image: url("./assets/img/13968.jpg");
+
+}
+.regForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-image: url("./assets/img/13968.jpg");
+
+}
+
+.form-regForm,
+.form-logForm {
+  width: 500px;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 30px;
+  border-radius: 10px;
+  box-shadow: 0px 10px 50px #555;
+  background-color: #ffffff;
+}
+
+form {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+h1 {
+  text-align: center;
+  width: 100%;
+  color: #111;
+  font-weight: lighter;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+label {
+  font-size: 0.8em;
+  margin-bottom: 0.25em;
+  color: #222;
+  font-weight: 500;
+}
+
+input {
+  padding: 5px 5px;
+  border-radius: 5px;
+  outline: none;
+  border: 1px solid #cfcfcf;
+}
+
+input::placeholder {
+  font-size: 1em;
+  font-weight: lighter;
+  color: #999;
+}
+
+input.error {
+  border: 1px solid red;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 0.75em;
+  display: relative;
+}
+
+.grad,
+.drzava,
+.telefon,
+.brojOsiguranika,
+.jmbg {
+  width: 49%;
+}
+
+.ime,
+.prezime,
+.adresa,
+.grad,
+.drzava,
+.email,
+.telefon,
+.brojOsiguranika,
+.lozinka,
+.potvrdaLozinke,
+.jmbg {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.adresa,
+.email,
+.lozinka,
+.potvrdaLozinke {
+  width: 100%;
+}
+
+.createAccount,
+.signIn {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.createAccount button,
+.signIn button {
+  background-color: #519e8a;
+  color: #fff;
+  border: 2px solid #fff;
+  width: 100%;
+  margin-top: 1em;
+  padding: 8px 0px;
+  font-size: 1em;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  margin-bottom: 0.25em;
+}
+
+.createAccount button:hover,
+.signIn button:hover {
+  color: #519e8a;
+  background-color: #fff;
+  border: 2px solid #519e8a;
+}
+
+.signIn small {
+  color: #999;
+  font-weight: 700;
+}
+
+.signIn small:hover {
+  color: #999;
+  font-weight: 900;
+  cursor: pointer;
+}

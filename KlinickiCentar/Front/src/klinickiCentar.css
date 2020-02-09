@@ -1,0 +1,295 @@
+.opisKlinickogCentra,
+.opisKC,
+.adresaKC,
+.listaKlinikaKC {
+  font-size: 0.8em;
+  margin-bottom: 0.25em;
+  color: #222;
+  font-weight: 900;
+}
+
+.slovaCard {
+  font-size: 1em;
+  color: #222;
+  font-weight: 500;
+  /* margin-bottom: 0.25em; */
+}
+
+.cardLa {
+  width: 210px;
+  height: 250px;
+}
+
+.slikaKC {
+  width: 4.5cm;
+  height: 4.5cm;
+}
+
+.slikaKCdiv {
+  text-align: center;
+}
+
+#button {
+  background-color: #519e8a;
+  color: rgb(0, 0, 0);
+  border: 2px solid rgb(124, 117, 117);
+  width: 650px;
+  margin-top: 1em;
+  padding: 8px 0px;
+  font-size: 1em;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  margin-bottom: 0.25em;
+}
+.errorMessage {
+  color: red;
+  font-size: 0.75em;
+  display: relative;
+}
+.successMessage {
+  color: green;
+  font-size: 20px;
+  display: relative;
+}
+
+.DodajKlinikuDugme {
+  /* padding-left: 8px; */
+  margin-left: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 8px;
+
+  background-color: #519e8a;
+  color: #fff;
+  border: 2px solid #fff;
+  /* width: 100%; */
+  padding: 8px 3px;
+  font-size: 1em;
+  font-weight: lighter;
+  letter-spacing: 1px;
+  
+}
+
+.DodajKlinikuDugme:hover {
+  color: #519e8a;
+  background-color: #fff;
+  border: 2px solid #519e8a;
+}
+
+.DodajKlinikuDugme small {
+  color: #999;
+  font-weight: 700;
+}
+
+.DodajKlinikuDugme small:hover {
+  color: #999;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.nazivNKlinike,
+.adresaNKlinike,
+.opisNKlinike,
+.imeNAK,
+.prezimeNAK,
+.emailNAK,
+.lozinkaNAK,
+.klinikaNAK,
+.telefonNAK,
+.lekNaziv,
+.lekSifra,
+.dijagnozaNaziv,
+.dijagnozaOznaka,
+.dijagnozaOpis,
+.razlogOdbijanja,
+.za,
+.formaPolje,
+.pretraga {
+  width: 100%;
+  height: 80%;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.formaDugme {
+  width: 100%;
+  height: 80%;
+  margin-top: 6px;
+}
+
+.nazivNKlinikeLabela,
+.adresaNKlinikeLabela,
+.opisNKlinikeLabela,
+.prezike,
+.imeNAKLabel,
+.prezimeNAKLabel,
+.emailNAKLabel,
+.lozinkaNAKLabel,
+.klinikaNAKLabel,
+.telefonNAKLabel,
+.lekNazivLabel,
+.lekSifraLabel,
+.dijagnozaNazivLabel,
+.dijagnozaOznakaLabel,
+.dijagnozaOpisLabel,
+.razlogOdbijanjaLabel,
+.zaLabel .lekarImeLabel,
+.lekarPrezimeLabel,
+.lekarTelefonLabel,
+.prezimeLekara,
+.telefonLekara,
+.imeLekara,
+.lozinkaLekara,
+.emailLekara,
+.lekarMailLabel,
+.lekarKlinika,
+.lekarKlinikaLabel,
+.pretraga {
+  width: 100%;
+  height: 80%;
+  margin: 3px;
+}
+
+.nazivNKlinikeInput,
+.adresaNKlinikeInput,
+.opisNKlinikeInput,
+.imeNAKInput,
+.prezimeNAKInput,
+.emailNAKInput,
+.lozinkaNAKInput,
+.klinikaNAKInput,
+.telefonNAKInput,
+.lekarImeLabel,
+.lekarLozinka,
+.lekarLozinkaLabel,
+.pretraga {
+  width: 100%;
+  height: 80%;
+  margin: 3px;
+}
+
+.TabelaListePacijenata,
+.SortListePacijenata {
+  width: 100%;
+  margin: 3px;
+}
+
+.TabelaListePacijenata {
+  width: 100%;
+  /* margin: 3px; */
+}
+
+.dogadjaj{
+  margin-left: 30px;
+  /* width: 90%; */
+  border: 2px solid #519e8a;
+  /* border-style: dashed; */
+  padding: 8px 3px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 30px;
+  /* background-color: #f9fbd2; */
+  font-size: 1em;
+  letter-spacing: 1px;
+}
+
+.dogadjaj1{
+  margin: 3px;
+  width: 50%;
+}
+.dogadjaj2{
+  /* width: 50%;
+  height: 50%; */
+  margin: 3px;
+  
+  /* background-color: #fff; */
+  /* border: 2px solid #519e8a; */
+  
+}
+.izlaz{
+  margin-left: 30px;
+  /* margin-right: 8px; */
+  
+}
+
+/* polja za zahtev za godisnji odmor i odsustvo */
+.razlogPolje{
+  width: 610px;
+  height: 100px;
+}
+.dugmePosalji{
+  margin-top: 20px;
+}
+
+.izbor{
+  border: 1px ridge rgb(221, 220, 220);
+  width: 80%;
+}
+.formaGodOdomorOdsustvo{
+  margin-left: 150px;
+}
+
+.misljenjePolje{
+  width: 1000px;
+  height: 150px;
+  margin-left: 5px;
+}
+
+.dugmeZavrsiPregled{
+  margin-left: 20px;
+  margin-top: 20px;
+}
+
+.formaPregleda{
+  margin-left: 10px;
+  width: 1070px;
+}
+
+.linkoviPregled{
+  width: 1070px;
+  margin-top: 20px;
+  /* margin-left: 5px; */
+}
+
+.dijagnozaRecept{
+  width: 500px;
+  /* height: 100px; */
+  border: outset;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  margin-right: 10px;
+}
+
+.misljenjeOkvir{
+  border: outset;
+  width: 1020px;
+  /* height: 180px; */
+}
+
+.poljePregled{
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+  width: 450px;
+
+}
+
+.pregledDugme{
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.izadjiDugme{
+  margin-bottom: 10px;
+  margin-top: 10px;
+  margin-left: 3px;
+  margin-right: 3px;
+}
+
+.pregled{
+  margin-left: 10px;
+  width: 1100px;
+}
