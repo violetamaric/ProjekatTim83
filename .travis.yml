@@ -16,7 +16,7 @@ services:
   - postgres
 
 before_install:
-  - cd centersystem
+  - cd KlinickiCentar
   - chmod +x ./mvnw
 
 script:
@@ -28,4 +28,4 @@ dist: trusty
 deploy:
   provider: heroku
   api_key: $HEROKU_API_KEY
-  app: centersystem
+  app: KlinickiCentar
