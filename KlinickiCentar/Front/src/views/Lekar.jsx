@@ -60,22 +60,27 @@ class Lekar extends Component {
     var level;
     var klasa = "pe-7s-gift";
     if (
-      position == "ZDRAVSTVENI KARTON JE IZMENJEN" ||
-      position == "PREGLED JE ZAVRSEN" ||
-      position == "ZAHTEV JE POSLAT" ||
-      position == "USPESNO PROMENJENA LOZINKA" ||
-      position == "USPESNO PROMENJENI PODACI" ||
-      position == "ZAKAZAN PREGLED" ||
-      position == "ZAKAZANA OPERACIJA"
+      position === "ZDRAVSTVENI KARTON JE IZMENJEN" ||
+      position === "PREGLED JE ZAVRSEN" ||
+      position === "ZAHTEV JE POSLAT" ||
+      position === "USPESNO PROMENJENA LOZINKA" ||
+      position === "USPESNO PROMENJENI PODACI" ||
+      position === "ZAKAZAN PREGLED" ||
+      position === "ZAKAZANA OPERACIJA"
     ) {
       color = 1;
       level = "success";
       klasa = "pe-7s-check";
-    } else if (position == "PREGLED JE ZAPOCET") {
+    } else if (position === "PREGLED JE ZAPOCET" )  {
       color = 4;
       level = "info";
       klasa = "pe-7s-check";
-    } else if (position == "NISU SVA POLJA UNESENA") {
+    } else if(position ==="ODUSTALI STE OD PREGLEDA"){
+      level = "warning";
+      color = 4;
+      klasa = "pe-7s-check";
+    }else if (position === "NISU SVA POLJA UNESENA" || 
+      position === "MAIL NIJE POSLAT") {
       color = 3;
       level = "error";
       klasa = "pe-7s-check";

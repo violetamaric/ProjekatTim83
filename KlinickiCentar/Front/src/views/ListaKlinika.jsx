@@ -12,6 +12,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import "login.js";
 import axios from "axios";
+import Dialog from "react-bootstrap-dialog";
 import moment from "moment";
 
 class ListaKlinika extends Component {
@@ -22,6 +23,8 @@ class ListaKlinika extends Component {
       uloga: props.uloga,
       token: props.token,
       listaKlinika: [],
+      terminiOdredjenogLekara: false,
+      lekariKlinikeZaposleni: [],
       listaFiltriranihKlinika: [],
       pretraziPoljeKlinika: "",
       pretraziPoljeLekara: "",
@@ -54,7 +57,7 @@ class ListaKlinika extends Component {
       izabranTermin: "",
       prikazaniTerminiLekara: 0
     };
-    console.log(this.state);
+
     this.listaKlinikaUKC = this.listaKlinikaUKC.bind(this);
     // this.sortMyArray = this.sortMyArray.bind(this);
     this.handleSortKlinika = this.handleSortKlinika.bind(this);
@@ -76,8 +79,6 @@ class ListaKlinika extends Component {
     this.odustani2 = this.odustani2.bind(this);
     this.vidiTermineClick = this.vidiTermineClick.bind(this);
     this.biranjeTermina = this.biranjeTermina.bind(this);
-
-    console.log(this.state.flag);
   }
 
   componentWillMount() {
@@ -92,59 +93,52 @@ class ListaKlinika extends Component {
     axios
       .get(url, config)
       .then(Response => {
-        console.log("Preuzeta lista klinika: ");
-        console.log(Response.data);
         this.setState({
           listaKlinika: Response.data,
           listaKlinikaPocetna: Response.data,
           nazivIzabraneKlinike: Response.data[0].naziv
         });
-        console.log(this.state.listaKlinika);
       })
 
-      .catch(error => {
-        console.log("klinike nisu preuzete");
-      });
+      .catch(error => {});
     axios
       .get("http://localhost:8025/api/tipPregleda/all", config)
       .then(Response => {
-        console.log("Preuzeta lista tipova pregleda: ");
-        console.log(Response.data);
         this.setState({
           tipoviPregleda: Response.data,
           nazivOznacenogPregleda: Response.data[0].naziv
         });
-        console.log(this.state.nazivOznacenogPregleda);
       })
 
-      .catch(error => {
-        console.log("klinike nisu preuzete");
-      });
+      .catch(error => {});
   }
   handleChange = e => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
-    console.log(this.state);
-    console.log("On change !!!");
   };
-
+  listaLekaraDijalog() {
+    var res = [];
+    this.state.lekariKlinikeZaposleni.map(lekar => {
+      res.push(
+        <tr>
+          <td>{lekar.ime}</td>
+          <td>{lekar.prezime}</td>
+        </tr>
+      );
+    });
+    return res;
+  }
   promenjenOdabirKlinike = e => {
-    this.setState(
-      {
-        izabranaKlinika: e.currentTarget.value
-      },
-      () => console.log(this.state.izabranaKlinika)
-    );
+    this.setState({
+      izabranaKlinika: e.currentTarget.value
+    });
     if (e.currentTarget.value != 0 && e.currentTarget.value != undefined) {
       const lista = this.state.listaKlinika;
       for (var i = 0; i < lista.length; i++) {
         if (lista[i].id == e.currentTarget.value) {
-          this.setState(
-            {
-              nazivIzabraneKlinike: lista[i].naziv
-            },
-            () => console.log(this.state)
-          );
+          this.setState({
+            nazivIzabraneKlinike: lista[i].naziv
+          });
           break;
         }
       }
@@ -152,14 +146,9 @@ class ListaKlinika extends Component {
     this.listaKlinikaUKC();
   };
   promenjenOdabirLekara = e => {
-    console.log("promenjen odabir lekara");
-    console.log(e.currentTarget.value);
-    this.setState(
-      {
-        izabranLekar: e.currentTarget.value
-      },
-      () => console.log(this.state)
-    );
+    this.setState({
+      izabranLekar: e.currentTarget.value
+    });
     if (e.currentTarget.value != 0 && e.currentTarget.value != undefined) {
       const lista = this.state.listaLekara;
       for (var i = 0; i < lista.length; i++) {
@@ -169,12 +158,9 @@ class ListaKlinika extends Component {
               nazivIzabranogLekara: ""
             },
             () =>
-              this.setState(
-                {
-                  nazivIzabranogLekara: lista[i].ime + " " + lista[i].prezime
-                },
-                () => console.log(this.state)
-              )
+              this.setState({
+                nazivIzabranogLekara: lista[i].ime + " " + lista[i].prezime
+              })
           );
           break;
         }
@@ -186,21 +172,67 @@ class ListaKlinika extends Component {
       //       " " +
       //       this.state.listaLekara[this.state.izabranLekar - 1].prezime
       //   },
-      //   () => console.log(this.state)
+      //   () =>
       // );
     }
     this.listaLekaraKlinike();
   };
-  vidiZaposlene = e =>{
-    console.log("VIDI ZAPOSLENE" + e.currentTarget.value);
-  }
+  vidiZaposlene = e => {
+    e.preventDefault();
+
+    var klinikaID = e.currentTarget.value;
+    var url =
+      "http://localhost:8025/api/klinike/listaLekaraKlinika/" + klinikaID;
+    var config = {
+      headers: {
+        Authorization: "Bearer " + this.state.token,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    };
+    axios
+      .get(url, config)
+      .then(Response => {
+        this.setState(
+          {
+            lekariKlinikeZaposleni: Response.data
+          },
+          () => {
+            this.dialog.show({
+              title: "Lekari zaposleni",
+              body: [
+                <div>
+                  <Table striped hover>
+                    <thead className="thead-dark">
+                      <tr>
+                        <th id="Naziv">Ime</th>
+                        <th id="Adresa"> Prezime</th>
+                      </tr>
+                    </thead>
+                    <tbody>{this.listaLekaraDijalog()}</tbody>
+                  </Table>
+                </div>
+              ],
+              actions: [Dialog.CancelAction()],
+              bsSize: "medium",
+              onHide: dialog => {
+                dialog.hide();
+              }
+            });
+          }
+        );
+      })
+      .catch(error => {});
+  };
   listaKlinikaUKC() {
     let res = [];
-    console.log("lista kl");
 
+    const PrikaziZaposleneTooltip = (
+      <Tooltip id="remove_tooltip">Vidi zaposlene</Tooltip>
+    );
     const pretraga = this.state.pretraziPoljeKlinika;
     const oc = this.state.ocenaKlinike;
-    console.log(oc);
+
     if ((pretraga == "" || pretraga == undefined) && oc < 5) {
       let lista = this.state.listaKlinika;
 
@@ -222,15 +254,30 @@ class ListaKlinika extends Component {
             <td key={lista[i].adresa}>{lista[i].adresa}</td>
             <td key={lista[i].opis}>{lista[i].opis}</td>
             <td key={lista[i].ocena}>{lista[i].ocena}</td>
-            <td><i className="pe-7s-id text-info" value={lista[i].id} onClick={(e)=>this.vidiZaposlene(e)}></i></td>
+            <td>
+              <OverlayTrigger placement="top" overlay={PrikaziZaposleneTooltip}>
+                <Button
+                  bsStyle="info"
+                  simple
+                  type="button"
+                  bsSize="sm"
+                  value={lista[i].id}
+                  onClick={e => this.vidiZaposlene(e)}
+                >
+                  <i className="pe-7s-id text-info" />
+                </Button>
+              </OverlayTrigger>
+              <Dialog
+                ref={el => {
+                  this.dialog = el;
+                }}
+              ></Dialog>
+            </td>
           </tr>
         );
       }
     } else {
-      console.log("===========");
-      console.log(pretraga);
       let lista = this.state.listaKlinika;
-
       for (var i = 0; i < lista.length; i++) {
         var naziv = lista[i].naziv;
         var adresa = lista[i].adresa;
@@ -259,7 +306,28 @@ class ListaKlinika extends Component {
                 <td key={lista[i].adresa}>{lista[i].adresa}</td>
                 <td key={lista[i].opis}>{lista[i].opis}</td>
                 <td key={lista[i].ocena}>{lista[i].ocena}</td>
-                <td><i className="pe-7s-id text-info" value={lista[i].id} onClick={(e)=>this.vidiZaposlene(e)}></i></td>
+                <td>
+                  <OverlayTrigger
+                    placement="top"
+                    overlay={PrikaziZaposleneTooltip}
+                  >
+                    <Button
+                      bsStyle="info"
+                      simple
+                      type="button"
+                      bsSize="sm"
+                      value={lista[i].id}
+                      onClick={e => this.vidiZaposlene(e)}
+                    >
+                      <i className="pe-7s-id text-info" />
+                    </Button>
+                  </OverlayTrigger>
+                  <Dialog
+                    ref={el => {
+                      this.dialog = el;
+                    }}
+                  ></Dialog>
+                </td>
               </tr>
             );
           }
@@ -283,11 +351,9 @@ class ListaKlinika extends Component {
     return res;
   }
   vidiTermineClick = e => {
-    e.preventDefault(); 
+    //
 
-    // console.log(e.target.value);
-
-    var lekarid = e.target.value;
+    var lekarid = e.currentTarget.value;
     var url =
       "http://localhost:8025/api/lekari/listaZauzetostiLekara/" +
       lekarid +
@@ -303,11 +369,9 @@ class ListaKlinika extends Component {
     axios
       .get(url, config)
       .then(Response => {
-        console.log("Preuzeti termini lekara: ");
-        console.log(Response.data);
-
         this.setState(
           {
+            terminiOdredjenogLekara: true,
             terminiIzabranogLekara: Response.data.sort((a, b) => {
               let startA = new Date(a.datumPocetka);
               startA.setHours(a.termin);
@@ -319,21 +383,15 @@ class ListaKlinika extends Component {
             })
           },
           () => {
-            console.log(this.state.terminiIzabranogLekara);
-            console.log("TERMINI");
             var niz = [false, false, false, false];
             this.state.terminiIzabranogLekara.map(termin => {
               const dat = moment(this.state.datumZaPregled).format(
                 "DD.MM.YYYY."
               );
               const datPoc = moment(termin.datumPocetka).format("DD.MM.YYYY.");
-              // console.log(moment(termin.datumZaPregled).format("HH:mm"));
-              console.log("******");
+              //
 
-              console.log(datPoc + " " + termin.termin);
-              console.log("******");
               if (dat.valueOf() === datPoc.valueOf()) {
-                console.log("ISTI SU");
                 if (termin.termin == 9) {
                   niz[0] = true;
                 } else if (termin.termin == 11) {
@@ -345,23 +403,18 @@ class ListaKlinika extends Component {
                 }
               }
             });
-            this.setState(
-              {
-                prikazTerminaClick: true,
-                lekarTerminClick: lekarid,
-                terminiZaIzabraniDatum: niz,
-                prikazaniTerminiLekara: lekarid
-              },
-              () => console.log(this.state)
-            );
+            this.setState({
+              prikazTerminaClick: true,
+              lekarTerminClick: lekarid,
+              terminiZaIzabraniDatum: niz,
+              prikazaniTerminiLekara: lekarid
+            });
           }
         );
       })
 
-      .catch(error => {
-        console.log("Nisu preuzeti termini lekara");
-      });
-  }
+      .catch(error => {});
+  };
   prikazTermina() {
     var res = [];
     if (this.state.prikazTerminaClick == true) {
@@ -387,25 +440,21 @@ class ListaKlinika extends Component {
     return res;
   }
   biranjeTermina = e => {
-    console.log(e.target.value);
     const termin = e.target.value;
-    console.log("IF");
+
     this.setState(
       {
         izabranTermin: termin
       },
-      () => {
-        console.log(this.state.izabranTermin);
-      }
+      () => {}
     );
   };
   listaLekaraKlinike() {
     let res = [];
-    console.log("lista lekara");
 
     const pretraga = this.state.pretraziPoljeLekara;
     const oc = this.state.ocenaLekara;
-    console.log(oc);
+
     const vidiTermine = <Tooltip>Vidi termine</Tooltip>;
     if ((pretraga == "" || pretraga == undefined) && oc < 5) {
       let lista = this.state.listaLekara;
@@ -447,18 +496,20 @@ class ListaKlinika extends Component {
                   <i className="pe-7s-clock text-info" />
                 </Button>
               </OverlayTrigger>
+              <Dialog
+                ref={el => {
+                  this.dialog = el;
+                }}
+              ></Dialog>
             </td>
             <td>
-            {this.state.lekarTerminClick == lista[i].id && (
-              this.prikazTermina()
-            )}
+              {this.state.lekarTerminClick == lista[i].id &&
+                this.prikazTermina()}
             </td>
           </tr>
         );
       }
     } else {
-      console.log("===========");
-      console.log(pretraga);
       let lista = this.state.listaLekara;
 
       for (var i = 0; i < lista.length; i++) {
@@ -474,8 +525,6 @@ class ListaKlinika extends Component {
           ime.toLowerCase().includes(pretraga.toLowerCase()) ||
           prezime.toLowerCase().includes(pretraga.toLowerCase())
         ) {
-          console.log(oc);
-          console.log(ocena);
           if (oc <= ocena) {
             const id2 = "odabranLekar" + i;
             const vt2 = "vidiTermine" + i;
@@ -513,6 +562,11 @@ class ListaKlinika extends Component {
                       <i className="pe-7s-clock text-info" />
                     </Button>
                   </OverlayTrigger>
+                  <Dialog
+                    ref={el => {
+                      this.dialog = el;
+                    }}
+                  ></Dialog>
                 </td>
                 <td>{this.prikazTermina()}</td>
               </tr>
@@ -525,108 +579,80 @@ class ListaKlinika extends Component {
     return res;
   }
   handleSortKlinika(sortBy) {
-    console.log("sort funkcija");
-    console.log(sortBy);
     const lista = this.state.listaKlinika;
     if (sortBy === "nazivUp") {
-      console.log("naziv");
       this.setState({
         listaKlinika: lista.sort((a, b) => a.naziv.localeCompare(b.naziv))
       });
     } else if (sortBy === "nazivDown") {
-      console.log("naziv");
       this.setState({
         listaKlinika: lista.sort((b, a) => a.naziv.localeCompare(b.naziv))
       });
     } else if (sortBy === "opisUp") {
-      console.log("opis");
       this.setState({
         listaKlinika: lista.sort((a, b) => a.opis.localeCompare(b.opis))
       });
     } else if (sortBy === "opisDown") {
-      console.log("opis");
       this.setState({
         listaKlinika: lista.sort((b, a) => a.opis.localeCompare(b.opis))
       });
     } else if (sortBy === "adresaUp") {
-      console.log("adresa");
       this.setState({
         listaKlinika: lista.sort((a, b) => a.adresa.localeCompare(b.adresa))
       });
     } else if (sortBy === "adresaDown") {
-      console.log("adresa");
       this.setState({
         listaKlinika: lista.sort((b, a) => a.adresa.localeCompare(b.adresa))
       });
     } else if (sortBy === "ocenaUp") {
-      console.log("ocena");
-
       this.setState({
         listaKlinika: lista.sort((a, b) => a.ocena - b.ocena)
       });
     } else if (sortBy === "ocenaDown") {
-      console.log("ocena");
-
       this.setState({
         listaKlinika: lista.sort((a, b) => b.ocena - a.ocena)
       });
     }
   }
   handleSortLekari(sortBy) {
-    console.log("sort funkcija");
-    console.log(sortBy);
     const lista = this.state.listaLekara;
     if (sortBy === "imeUp") {
-      console.log("ime");
       this.setState({
         listaLekara: lista.sort((a, b) => a.ime.localeCompare(b.ime))
       });
     } else if (sortBy === "imeDown") {
-      console.log("ime");
       this.setState({
         listaLekara: lista.sort((b, a) => a.ime.localeCompare(b.ime))
       });
     } else if (sortBy === "prezimeUp") {
-      console.log("prezime");
       this.setState({
         listaLekara: lista.sort((a, b) => a.prezime.localeCompare(b.prezime))
       });
     } else if (sortBy === "prezimeDown") {
-      console.log("prezime");
       this.setState({
         listaLekara: lista.sort((b, a) => a.prezime.localeCompare(b.prezime))
       });
     } else if (sortBy === "ocenaUp") {
-      console.log("ocena");
-
       this.setState({
         listaLekara: lista.sort((a, b) => a.ocena - b.ocena)
       });
     } else if (sortBy === "ocenaDown") {
-      console.log("ocena");
-
       this.setState({
         listaLekara: lista.sort((a, b) => b.ocena - a.ocena)
       });
     }
   }
   sortMyArrayLekari(sortBy) {
-    console.log("sort funkcija");
-    console.log(sortBy);
     const lista = this.state.listaLekara;
     if (sortBy === "ime") {
-      console.log("ime");
       this.setState({
         listaKlinika: lista.sort((a, b) => a.ime.localeCompare(b.ime))
       });
     } else if (sortBy === "prezime") {
-      console.log("prezime");
       this.setState({
         listaKlinika: lista.sort((a, b) => a.prezime.localeCompare(b.prezime))
       });
     } else if (sortBy === "ocena") {
-      console.log("ocena");
-
       this.setState({
         listaKlinika: lista.sort((a, b) => b.ocena - a.ocena)
       });
@@ -636,17 +662,14 @@ class ListaKlinika extends Component {
     e.preventDefault();
     const { name, value } = e.target;
 
-    this.setState({ [name]: value }, () => console.log(this.state));
+    this.setState({ [name]: value });
   };
   handleChangeDate = date => {
-    console.log(date);
     this.setState(
       {
         datumZaPregled: date
       },
       () => {
-        console.log(this.state);
-
         var config = {
           headers: {
             Authorization: "Bearer " + this.state.token,
@@ -661,16 +684,12 @@ class ListaKlinika extends Component {
             config
           )
           .then(Response => {
-            console.log("Preuzeta lista klinika: ");
-            console.log(Response.data);
             this.setState({
               listaKlinika: Response.data
             });
           })
 
-          .catch(error => {
-            console.log("klinike nisu preuzete");
-          });
+          .catch(error => {});
       }
     );
   };
@@ -702,7 +721,6 @@ class ListaKlinika extends Component {
       });
       this.listaKlinikaUKC();
     }
-    console.log(this.state.ocenaKlinike);
   };
   podesiOcenuLekara = e => {
     e.preventDefault();
@@ -732,7 +750,6 @@ class ListaKlinika extends Component {
       });
       this.listaLekaraKlinike();
     }
-    console.log(this.state.ocenaLekara);
   };
   slobodniTermini() {
     //get zahtev za preuzimanje termina iz baze za zadati datum
@@ -755,8 +772,6 @@ class ListaKlinika extends Component {
         config
       )
       .then(Response => {
-        console.log("Preuzeta lista lekara: ");
-        console.log(Response.data);
         this.setState({
           listaLekara: Response.data,
           listaLekaraPocetna: Response.data,
@@ -765,12 +780,9 @@ class ListaKlinika extends Component {
           redirectNext: true,
           flag: 1
         });
-        console.log(this.state.listaLekara);
       })
 
-      .catch(error => {
-        console.log("lekari nisu preuzete");
-      });
+      .catch(error => {});
     // this.setState({
 
     // });
@@ -778,8 +790,7 @@ class ListaKlinika extends Component {
   odabranLekar = e => {
     //treba redirektovati na pregled zahteva za pregled
     e.preventDefault();
-    console.log(this.state.izabranLekar);
-    console.log(this.state.flag);
+
     const ol = this.state.izabranLekar;
     var porukaErr = "";
     if (this.state.prikazaniTerminiLekara != ol) {
@@ -806,22 +817,15 @@ class ListaKlinika extends Component {
         flag: 2
       });
     } else {
-      console.log(this.state.back);
-
       // if (this.state.back == false) {
-      this.setState(
-        {
-          formError: porukaErr
-        },
-        () => console.log(this.state.formError)
-      );
+      this.setState({
+        formError: porukaErr
+      });
       // }
     }
   };
   redirectReferer() {
-    console.log("REDIRECT REFF");
     var flag = 1;
-    console.log(this.state.izabranaKlinika);
 
     if (this.state.redirectNext == true) {
       return (
@@ -850,16 +854,16 @@ class ListaKlinika extends Component {
     //       this.state.izabranaKlinika
     //   )
     //   .then(Response => {
-    //     console.log("Preuzeta lista lekara: ");
-    //     console.log(Response.data);
+    //
+    //
     //     this.setState({
     //       listaLekara: Response.data
     //     });
-    //     console.log(this.state.listaLekara);
+    //
     //   })
 
     //   .catch(error => {
-    //     console.log("lekari nisu preuzete");
+    //
     //   });
     if (this.state.redirectNext2 == true) {
       return (
@@ -883,8 +887,6 @@ class ListaKlinika extends Component {
     }
   }
   biranjeTipaPregleda(tip) {
-    console.log("prosledjen pregled");
-    console.log(tip.target.value);
     const idTP = tip.target.value;
     var config = {
       headers: {
@@ -896,26 +898,21 @@ class ListaKlinika extends Component {
     axios
       .get("http://localhost:8025/api/tipPregleda/klinikeTP/" + idTP, config)
       .then(Response => {
-        console.log("--------------------");
-        console.log(Response.data);
         var filtrirane = Response.data;
         var listaFK = [];
         var lista = this.state.listaKlinika;
         for (var i = 0; i < this.state.listaKlinika; i++) {
           if (filtrirane.some(item => lista[i].id === item.id)) {
             listaFK.concat(lista[i]);
-            console.log(lista[i].id);
-            console.log("*********");
           }
         }
-        console.log("--------------------");
+
         this.setState(
           {
             listaKlinika: listaFK,
             oznaceniTipPregleda: tip.target.value
           },
           () => {
-            console.log("--------------------");
             for (var i = 0; i < lista.length; i++) {
               var naziv = lista[i].naziv;
               var id = lista[i].id;
@@ -929,9 +926,7 @@ class ListaKlinika extends Component {
         );
       })
 
-      .catch(error => {
-        console.log("klinike nisu preuzete");
-      });
+      .catch(error => {});
   }
 
   izaberiVrstuPregleda() {
@@ -944,7 +939,7 @@ class ListaKlinika extends Component {
   }
   slanjeZahtevaZaPregled = e => {
     e.preventDefault();
-    console.log("slanje zahteva....");
+
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -969,9 +964,6 @@ class ListaKlinika extends Component {
         config
       )
       .then(response => {
-        console.log("PREGLED");
-        console.log(response);
-
         this.setState(
           {
             uspesnoPoslatZahtev: true
@@ -979,28 +971,22 @@ class ListaKlinika extends Component {
           () => this.props.handleClick("ZAHTEV JE POSLAT")
         );
       })
-      .catch(error => {
-        console.log("greska pregled");
-        console.log(error.response);
-      });
+      .catch(error => {});
   };
   prethodno = e => {
     e.preventDefault();
-    console.log("vrati se");
+
     var flag = 0;
-    this.setState(
-      {
-        back: true,
-        flag: 0,
-        prikazTerminaClick: false,
-        izabraniLekar: 0
-      },
-      () => console.log(this.state.back)
-    );
+    this.setState({
+      back: true,
+      flag: 0,
+      prikazTerminaClick: false,
+      izabraniLekar: 0
+    });
   };
   prethodno2() {
     var flag = 0;
-    console.log("prethodno 2");
+
     if (this.state.back == true) {
       this.setState(
         {
@@ -1027,7 +1013,6 @@ class ListaKlinika extends Component {
     }
   }
   prikazFiltera() {
-    console.log(this.state.odabranFilter);
     let res = [];
     if (this.state.odabranFilter == "pretraga") {
       res.push(
@@ -1111,7 +1096,6 @@ class ListaKlinika extends Component {
     return res;
   }
   prikazFilteraL() {
-    console.log(this.state.odabranFilter);
     let res = [];
     if (this.state.odabranFilterL == "pretraga") {
       res.push(
@@ -1153,13 +1137,12 @@ class ListaKlinika extends Component {
   }
   odustani = e => {
     e.preventDefault();
-    console.log("odustani od pregleda");
+
     this.setState({
       quit: true
     });
   };
   odustani2 = () => {
-    console.log("odustani 2");
     if (this.state.quit == true) {
       return <Redirect from="/" to="/pacijent/pocetnaStranica" />;
     }
@@ -1231,7 +1214,6 @@ class ListaKlinika extends Component {
     }
   }
   ponistiFiltere() {
-    console.log("ponistavanje filtera");
     this.setState({
       listaKlinika: this.state.listaKlinikaPocetna,
       odabranFilter: "",
@@ -1240,7 +1222,6 @@ class ListaKlinika extends Component {
     });
   }
   ponistiFiltereL() {
-    console.log("ponistavanje filtera");
     this.setState({
       listaLekara: this.state.listaLekaraPocetna,
       odabranFilterL: "",
@@ -1259,7 +1240,7 @@ class ListaKlinika extends Component {
     const drzava = this.state.drzava;
     const lbo = this.state.lbo;
     const lista = this.state.listaKlinika;
-    console.log(this.state.flag);
+
     // const [startDate, setStartDate] = useState(new Date());
 
     if (this.state.uspesnoPoslatZahtev == true) {

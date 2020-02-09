@@ -4,8 +4,6 @@ import Button from "components/CustomButton/CustomButton.jsx";
 import { Grid, Row, Col, Table, NavItem, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import { BrowserRouter, Route, Switch, Redirect } from "react-router-dom";
 import { Card } from "components/Card/Card.jsx";
-import { StatsCard } from "components/StatsCard/StatsCard.jsx";
-import Dialog from 'react-bootstrap-dialog';
 import axios from "axios";
 import slikaPacijent from "assets/img/pacijentImage.jpg";
 import Pregled from "views/Pregled.jsx";
@@ -293,7 +291,7 @@ class PregledProfilaPacijenta extends Component {
           <BrowserRouter>
             <Switch>
               <Route
-                path="/listaPacijenataLekar"
+                path="/lekar/listaPacijenataLekar"
                 render={props => <ListaPacijenataLekar {...props}
                     token={this.state.token}
                     email={this.state.email} 
@@ -302,7 +300,7 @@ class PregledProfilaPacijenta extends Component {
                   //nije emailPacijenta vec je id al dobro
                     emailPacijenta={this.state.emailPacijenta}   />}
               />
-              <Redirect from="/" to="/listaPacijenataLekar" />
+              <Redirect from="/" to="/lekar/listaPacijenataLekar" />
             </Switch>
           </BrowserRouter>
         );
@@ -358,7 +356,7 @@ class PregledProfilaPacijenta extends Component {
                     title="Zdravstveni karton"
                     
                     content={
-                      <div className="ct-chart">
+                      <div >
                 
                         <Table striped hover>
                         <tbody>

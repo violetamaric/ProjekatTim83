@@ -190,6 +190,7 @@ class Sifrarnik extends Component {
               this.config
             )
             .then(response => {
+              this.props.handleClick("DODAT LEK");
               this.listaLekova();
             })
             .catch(error => {});
@@ -264,6 +265,7 @@ class Sifrarnik extends Component {
               this.config
             )
             .then(response => {
+              this.props.handleClick("DODATA DIJAGNOZA");
               this.listaDijagnoza();
             })
             .catch(error => {});
@@ -335,6 +337,7 @@ class Sifrarnik extends Component {
                   this.config
                 )
                 .then(response2 => {
+                  this.props.handleClick("IZMENJEN LEK");
                   this.listaLekova();
                 })
                 .catch(error => {});
@@ -443,6 +446,7 @@ class Sifrarnik extends Component {
                   this.config
                 )
                 .then(response2 => {
+                  this.props.handleClick("IZMENJENA DIJAGNOZA");
                   this.listaDijagnoza();
                 })
                 .catch(error => {});

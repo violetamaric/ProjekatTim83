@@ -3,7 +3,6 @@ package com.example.demo.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,35 +14,30 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
-import org.springframework.transaction.annotation.Transactional;
-
 @Entity
-//@Transactional
-//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class TipPregleda{
-
+public class TipPregleda {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(name="naziv", nullable=false)
+
+	@Column(name = "naziv", nullable = false)
 	private String naziv;
-	
-	@Column(name="cena", nullable=false)
+
+	@Column(name = "cena", nullable = false)
 	private double cena;
-	
+
 	@ManyToMany
 	@JoinTable(name = "tip_pregleda_klinika", joinColumns = @JoinColumn(name = "tip_pregleda_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "klinika_id", referencedColumnName = "id"))
 	private Set<Klinika> listaKlinika = new HashSet<Klinika>();
-	
-	@OneToMany(mappedBy = "tipPregleda", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "tipPregleda", fetch = FetchType.LAZY)
 	private Set<Pregled> listaPregleda = new HashSet<Pregled>();
 
 	public TipPregleda() {
 		super();
 	}
-	
+
 	public TipPregleda(TipPregleda tp) {
 		super();
 		this.id = tp.getId();
@@ -52,7 +46,6 @@ public class TipPregleda{
 		this.listaKlinika = tp.getListaKlinika();
 		this.listaPregleda = tp.getListaPregleda();
 	}
-	
 
 	public double getCena() {
 		return cena;
@@ -66,11 +59,9 @@ public class TipPregleda{
 		return listaPregleda;
 	}
 
-
 	public void setListaPregleda(Set<Pregled> listaPregleda) {
 		this.listaPregleda = listaPregleda;
 	}
-
 
 	public Long getId() {
 		return id;
@@ -95,7 +86,7 @@ public class TipPregleda{
 	public void setListaKlinika(Set<Klinika> listaKlinika) {
 		this.listaKlinika = listaKlinika;
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -138,5 +129,10 @@ public class TipPregleda{
 			return false;
 		return true;
 	}
-	
+
+	@Override
+	public String toString() {
+		return "TipPregleda [id=" + id + ", naziv=" + naziv + ", cena=" + cena + ", listaKlinika=" + listaKlinika + "]";
+	}
+
 }

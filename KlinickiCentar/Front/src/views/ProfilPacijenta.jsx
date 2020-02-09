@@ -3,6 +3,7 @@ import { Card } from "components/Card/Card.jsx";
 import { StatsCard } from "components/StatsCard/StatsCard.jsx";
 import axios from "axios";
 import slikaPacijent from "assets/img/pacijentImage.jpg";
+import { Grid, Row, Col } from "react-bootstrap";
 
 class ProfilPacijenta extends React.Component {
   constructor(props) {

@@ -73,6 +73,7 @@ class ListaZahtevaAdminKC extends Component {
     .post(url2,{email: e.target.id}, this.config)
     .then(response => {
       console.log("ODOBRENOOOO");
+      this.props.handleClick("POTVRDJEN ZAHTEV OD PACIJENTA");
       console.log(response);
       this.ucitajPonovo();
     })
@@ -134,6 +135,7 @@ class ListaZahtevaAdminKC extends Component {
             .post(url3,{email: this.state.za}, this.config)
             .then(response => {
               console.log("Odbijanje uspelo! ");
+              this.props.handleClick("ODBIJEN ZAHTEV OD PACIJENTA" );
               console.log(response.data);
               this.ucitajPonovo();
             })

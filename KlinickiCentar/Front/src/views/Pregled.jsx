@@ -10,11 +10,7 @@ import Button from "components/CustomButton/CustomButton.jsx";
 import axios from "axios";
 import Dialog from 'react-bootstrap-dialog';
 import PocetnaStranicaLekara from "views/PocetnaStranicaLekara.jsx";
-
 import "klinickiCentar.css";
-
-import Slikalekari from "assets/img/lekari.jpg";
-import slikaPregledi from "assets/img/pregled.jpg"
 import kalendarSlika from "assets/img/calendar.png"
 import moment from "moment";
 import slikaPacijent from "assets/img/pacijentImage.jpg";
@@ -171,31 +167,31 @@ class Pregled extends React.Component {
     this.setState(
       {
         datumOperacije: date
-      },
-      () => {
-        console.log(this.state);
-        //ovde izlistati termine
-        axios
-        .post("http://localhost:8025/api/pregledi/getTerminiLekaraZaDatum", {datum: this.state.datumOperacije}, this.config)
-        .then(Response => {
-          console.log("Preuzeti termini: ");
-          console.log(Response.data);
-          this.setState({
-            terminiOperacije: Response.data,
-            // terminPregleda: Response.data[0]
-          },()=>{
-            console.log(this.state.terminiOperacije);
-            console.log(this.state.terminOperacije);
-            this.prikazTerminaOperacije();
-          }
-            );
-          
-        })
-  
-        .catch(error => {
-          console.log("Lista tipova nije preuzeta");
-        });
       }
+      // ,() => {
+      //   console.log(this.state);
+      //   //ovde izlistati termine
+      //   axios
+      //   .post("http://localhost:8025/api/pregledi/getTerminiLekaraZaDatum", {datum: this.state.datumOperacije}, this.config)
+      //   .then(Response => {
+      //     console.log("Preuzeti termini: ");
+      //     console.log(Response.data);
+      //     this.setState({
+      //       terminiOperacije: Response.data,
+      //       // terminPregleda: Response.data[0]
+      //     },()=>{
+      //       console.log(this.state.terminiOperacije);
+      //       console.log(this.state.terminOperacije);
+      //       this.prikazTerminaOperacije();
+      //     }
+      //       );
+          
+      //   })
+  
+      //   .catch(error => {
+      //     console.log("Lista tipova nije preuzeta");
+      //   });
+      // }
     );
   };
   handleChange = e => {
@@ -206,6 +202,8 @@ class Pregled extends React.Component {
   };
  
   handleOdustani(){
+    //staviti i notifikac
+    this.props.handleClick("ODUSTALI STE OD PREGLEDA")
     this.setState({
       redirectToOdustani: true
     })
@@ -811,11 +809,7 @@ class Pregled extends React.Component {
     console.log("/************************************************/");
     console.log(this.state.terminiOperacije);
     var lista = this.state.terminiOperacije;
-      // if(lista.length === 0){
-      //   res.push(
-      //     <option ></option>
-      //   );
-      // }
+      
       for(var i = 0; i < lista.length; i++){
         var kraj = lista[i] + 2;
         res.push(
@@ -920,6 +914,7 @@ class Pregled extends React.Component {
           
         }) 
         .catch(error => {
+          this.props.handleClick("MAIL NIJE POSLAT")
           console.log("Lista tipova nije preuzeta");
         });
     }
@@ -933,17 +928,17 @@ class Pregled extends React.Component {
         <BrowserRouter>
           <Switch>
             <Route
-              path="/pocetnaStranicaLekara"
+              path="/pocetnaStranica"
               render={props => <PocetnaStranicaLekara {...props}
                   token={this.state.token}
                   email={this.state.email} 
                   uloga={this.state.uloga}
                   handleClick={this.props.handleClick}
                 //nije emailPacijenta vec je id al dobro
-                  emailPacijenta={this.state.emailPacijenta}  
+                 // emailPacijenta={this.state.emailPacijenta}  
                 />}
             />
-            <Redirect from="/" to="/pocetnaStranicaLekara" />
+            <Redirect from="/" to="/pocetnaStranica" />
           </Switch>
         </BrowserRouter>
       );
@@ -968,7 +963,7 @@ class Pregled extends React.Component {
                     
                     ctTableResponsive
                     content={
-                      <div className="ct-chart">
+                      <div >
                 
                         <Table striped hover>
                         <tbody>
@@ -1425,7 +1420,11 @@ class Pregled extends React.Component {
                             <select name="odabirKlinike" 
                               onChange={e => this.biranjeTerminaOP(e)}
                              >
-                              {this.prikazTerminaOperacije()} 
+                              <option value={9}>9:00-11:00</option>
+                              <option value={11}>11:00-13:00</option>
+                              <option value={13}>13:00-15:00</option>
+                              <option value={15}>15:00-17:00</option>
+                              {/* {this.prikazTerminaOperacije()}  */}
             
                             </select>
                               
@@ -1455,7 +1454,7 @@ class Pregled extends React.Component {
                       })}
                       >
                       <StatsCard
-                        bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
+                        //bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
                         // statsText="Lista pacijenata"
                               // statsValue="105GB"
                         // statsIcon={<i className="fa fa-refresh" />}
@@ -1472,7 +1471,7 @@ class Pregled extends React.Component {
                       })}
                       >
                           <StatsCard
-                              bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
+                              //bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
                               // statsText="Lista pacijenata"
                               // statsValue="105GB"
                               // statsIcon={<i className="fa fa-refresh" />}
@@ -1488,7 +1487,7 @@ class Pregled extends React.Component {
                       })}
                       >
                           <StatsCard
-                              bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
+                             // bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
                               // statsText="Lista pacijenata"
                               // statsValue="105GB"
                               // statsIcon={<i className="fa fa-refresh" />}
@@ -1504,7 +1503,7 @@ class Pregled extends React.Component {
                       })}
                       >
                           <StatsCard
-                              bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
+                             // bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
                               // statsText="Lista pacijenata"
                               // statsValue="105GB"
                               // statsIcon={<i className="fa fa-refresh" />}

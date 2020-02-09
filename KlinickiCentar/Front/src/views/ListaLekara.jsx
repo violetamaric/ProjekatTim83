@@ -30,7 +30,8 @@ class ListaLekara extends Component {
       klinikaLekara: 0,
       reirectToIzmeniLekar: false,
       pretraziPoljeKlinika: "",
-      listaSalaZaBrisanjeIzmjenu: []
+      listaSalaZaBrisanjeIzmjenu: [],
+      idLekaraIzmjena: ""
     };
     this.listaLekaraUK = this.listaLekaraUK.bind(this);
     this.dodajLekara = this.dodajLekara.bind(this);
@@ -55,19 +56,6 @@ class ListaLekara extends Component {
     console.log("On change !!!");
   };
 
-  // listaKlinikaIzbor(){
-  //   let res = [];
-
-  //   let lista = this.state.listaKlinika;
-
-  //   for (var i = 0; i < lista.length; i++) {
-  //     res.push(
-  //       <option value={lista[i].id} >{lista[i].naziv}</option>
-  //        //<MenuItem eventKey={lista[i].id}>{lista[i].naziv}</MenuItem>
-  //     );
-  //   }
-  //   return res;
-  // }
   proslediKliniku(klinika) {
     console.log("prosledjena klinika");
 
@@ -80,7 +68,32 @@ class ListaLekara extends Component {
       () => console.log(this.state)
     );
   }
-  listaLekara() {
+  // listaLekara() {
+  //   var config = {
+  //     headers: {
+  //       Authorization: "Bearer " + this.state.token,
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json"
+  //     }
+  //   };
+  //   const urlKlinike =
+  //     "http://localhost:8025/api/klinike/listaLekaraKlinika/" +
+  //     this.state.idKlinike;
+  //   axios.get(urlKlinike, config).then(lekari => {
+  //     console.log("Preuzeta klinika");
+  //     console.log(lekari.data);
+
+  //     this.setState({
+       
+  //       listaLekara: lekari.data
+  //     }, ()=>{
+  //       console.log("Preuzeti lekari  klinike : 111111111111111111111");
+  //       console.log(this.state.listaLekara);
+  //       this.listaLekaraUK();
+  //     });
+  //   });
+  // }
+  listaLekaraPreuzmiOpet(){
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -91,17 +104,36 @@ class ListaLekara extends Component {
     const urlKlinike =
       "http://localhost:8025/api/klinike/listaLekaraKlinika/" +
       this.state.idKlinike;
-    axios.get(urlKlinike, config).then(klinika => {
+    axios.get(urlKlinike, config).then(lekari => {
       console.log("Preuzeta klinika");
-      console.log(klinika.data);
+      console.log(lekari.data);
 
       this.setState({
-        idKlinika: klinika.data.id,
-        listaLekara: klinika.data
+       
+        listaLekara: lekari.data
+      }, ()=>{
+        console.log("Preuzeti lekari  klinike : 111111111111111111111");
+        console.log(this.state.listaLekara);
+        
       });
     });
+    axios
+    .get(
+      "http://localhost:8025/api/lekari/allIBlekari/" +
+        this.state.idKlinike,
+      config
+    )
+    .then(brisanjelekara => {
+      console.log("Lekariza brisanje i izm 5555555555555")
+      console.log(brisanjelekara.data);
+      this.setState({
+        listaSalaZaBrisanjeIzmjenu: brisanjelekara.data
+      });
+    });
+    this.listaLekaraUK();
   }
   listaLekaraPonovo() {
+    this.listaLekaraPreuzmiOpet();
     console.log("ID KLINIKE OD KOJE TRAZIM LEKARE: " + this.state.idKlinike);
     console.log("ucitaj mi kliniku");
     var config = {
@@ -126,7 +158,9 @@ class ListaLekara extends Component {
   }
   obrisiLekara = e => {
     e.preventDefault();
-
+    console.log("CLick brisanje lekara");
+    console.log("Lekar kojeg brisem: " + e.target.id);
+    console.log("--------------------------------");
     var config = {
       headers: {
         Authorization: "Bearer " + this.state.token,
@@ -153,7 +187,6 @@ class ListaLekara extends Component {
         console.log("Brisanje leka nije uspelo! " + e.target.id);
       });
   };
-
   componentWillMount() {
     console.log("wmount");
     console.log("Preuzimanje admina klinike.....");
@@ -177,36 +210,55 @@ class ListaLekara extends Component {
           //   prezime: Response.data.prezime,
           //   telefon: Response.data.telefon,
           idKlinike: Response.data.idKlinike
-        });
-        console.log("Ucitaj mi kliniku sa id " + this.state.idKlinike);
+        }, ()=>{
+          console.log("Ucitaj mi kliniku sa id " + this.state.idKlinike);
 
-        axios
-          .get(
-            "http://localhost:8025/api/lekari/allIBlekari/" +
-              this.state.idKlinike,
-            config
-          )
-          .then(resp => {
-            console.log(resp);
+         
+
+
+          var config = {
+            headers: {
+              Authorization: "Bearer " + this.state.token,
+              Accept: "application/json",
+              "Content-Type": "application/json"
+            }
+          };
+          const urlKlinike =
+            "http://localhost:8025/api/klinike/listaLekaraKlinika/" +
+            this.state.idKlinike;
+          axios.get(urlKlinike, config).then(lekari => {
+            console.log("Preuzeta klinika");
+            console.log(lekari.data);
+      
             this.setState({
-              listaSalaZaBrisanjeIzmjenu: resp.data
+             
+              listaLekara: lekari.data
+            }, ()=>{
+              console.log("Preuzeti lekari  klinike : 111111111111111111111");
+              console.log(this.state.listaLekara);
+          
             });
           });
+       
 
-        console.log("ucitaj mi kliniku");
-        const urlKlinike =
-          "http://localhost:8025/api/klinike/listaLekaraKlinika/" +
-          this.state.idKlinike;
-        axios.get(urlKlinike, config).then(klinika => {
-          console.log("Preuzeta klinika");
-          console.log(klinika.data);
-
-          this.setState({
-            // idKlinike: klinika.data.id,
-            listaLekara: klinika.data
-          });
-          console.log("++++++++++++++++++ Id k: " + this.state.idKlinike);
+            
         });
+        
+        axios
+        .get(
+          "http://localhost:8025/api/lekari/allIBlekari/" +
+            this.state.idKlinike,
+          config
+        )
+        .then(brisanjelekara => {
+          console.log("Lekariza brisanje i izm 5555555555555")
+          console.log(brisanjelekara.data);
+          this.setState({
+            listaSalaZaBrisanjeIzmjenu: brisanjelekara.data
+          });
+        });
+       this.listaLekaraUK()
+  
       })
 
       .catch(error => {
@@ -214,14 +266,7 @@ class ListaLekara extends Component {
       });
     console.log("************* ID KLINIKE JE:" + this.state.idKlinike);
 
-    //za klinike ovdje
-    var config = {
-      headers: {
-        Authorization: "Bearer " + this.state.token,
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      }
-    };
+
     const url1 = "http://localhost:8025/api/klinike/all";
     axios
       .get(url1, config)
@@ -378,26 +423,152 @@ class ListaLekara extends Component {
       }
     });
   };
+
+
   handleIzmeni = e => {
+
     e.preventDefault();
+ 
+       var config = {
+      headers: {
+        Authorization: "Bearer " + this.state.token,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    };
     console.log(e.target.id);
-    console.log("handle IZMENIIII LEKARA");
+    console.log("handle IZMENIIII LEKARA po id");
     this.setState({
-      reirectToIzmeniLekar: true,
-      emailLekara: e.target.id
+     // reirectToIzmeniLekar: true,
+      idLekaraIzmjena: e.target.id
     });
-    // const url2 = "http://localhost:8025/api/lekari/update/" + e.target.id;
-    // axios
-    // .post(url2, {})
-    // .then(response => {
-    //   console.log("ODOBRENOOOO");
-    //   console.log(response);
-    //   this.ucitajPonovo();
-    // })
-    // .catch(error => {
-    //     console.log(error.response);
-    // });
-  };
+    const url5 = 'http://localhost:8025/api/lekari/' + e.target.id;
+    axios.get(url5, config)
+      .then(Response=>{
+        console.log(Response.data);
+        this.setState({
+          emailLekara: Response.data.email,
+          imeLekara: Response.data.ime,
+          prezimeLekara: Response.data.prezime,
+          telefonLekara: Response.data.telefon,
+         
+        }, ()=> {
+         
+
+            this.dialog.show({
+              title: 'Izmena administratora klinike',
+              body: [
+                
+                <form  className="formaIzmenaAdministratoraKlinike">
+                  <div className="imeNAK" >
+                    <label className="imeNAKLabela" htmlFor="imeNAK">Ime: </label>
+                    <input className="imeNAKInput"
+                      type="text"
+                      name="imeLekara"
+                      defaultValue = {this.state.imeLekara} 
+                      
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="prezimeNAK" >
+                    <label className="prezimeNAKLabel" htmlFor="prezimeNAK">Prezime: </label>
+                    <input
+                      className="prezimeNAKInput"
+                      type="text"
+                      name="prezimeLekara"
+                      defaultValue={this.state.prezimeLekara}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                  <div className="emailNAK" >
+                    <label className="emailNAKLabel" htmlFor="emailNAK">Email: </label>
+                    <input className="emailNAKInput"
+                      type="text"
+                      name="emailLekara"
+                      defaultValue={this.state.emailLekara}
+                      disabled="disabled"
+                      //onChange={this.handleChange}
+                    />
+                  </div>
+                 
+                  <div className="telefonNAK" >
+                    <label className="telefonNAKLabel" htmlFor="telefonNAK">Telefon: </label>
+                    <input className="telefonNAKInput"
+                      type="text"
+                      name="telefonLekara"
+                      defaultValue={this.state.telefonLekara}
+                      onChange={this.handleChange}
+                    />
+                  </div>
+                 
+              
+                </form>
+              ],
+              actions: [
+                Dialog.CancelAction(),
+                Dialog.OKAction(()=> {
+                 
+                    console.log("Izmjena admina klinike: ---------------")  
+                    axios
+                    .put("http://localhost:8025/api/lekari/update", {
+                      ime: this.state.imeLekara,
+                      prezime: this.state.prezimeLekara,
+                      email: this.state.emailLekara,
+                      telefon: this.state.telefonLekara,
+                      id: this.state.idLekaraIzmjena
+                     
+                     // idKlinike: this.state.klinikaIzmenjenogAK
+                    }, config)
+                    .then(response => {
+                      console.log("izmena uspela");
+                      console.log(response.data);
+                      this.listaLekaraPreuzmiOpet()
+    
+                    })
+                    .catch(error => {
+                      console.log("Izmena nije uspela! ");
+                    });
+    
+                   
+                })
+              ],
+              bsSize: 'medium',
+              onHide: (dialog) => {
+                dialog.hide()
+                console.log('closed by clicking background.')
+              }
+            
+     
+            
+    
+          })
+         
+      
+        });
+       
+      })
+  }
+
+  // handleIzmeni = e => {
+  //   e.preventDefault();
+  //   console.log(e.target.id);
+  //   console.log("handle IZMENIIII LEKARA po id");
+  //   this.setState({
+  //    // reirectToIzmeniLekar: true,
+  //     idLekaraIzmjena: e.target.id
+  //   });
+  //   // const url2 = "http://localhost:8025/api/lekari/update/" + e.target.id;
+  //   // axios
+  //   // .post(url2, {})
+  //   // .then(response => {
+  //   //   console.log("ODOBRENOOOO");
+  //   //   console.log(response);
+  //   //   this.ucitajPonovo();
+  //   // })
+  //   // .catch(error => {
+  //   //     console.log(error.response);
+  //   // });
+  // };
 
   listaLekaraUK() {
     let res = [];
@@ -405,11 +576,11 @@ class ListaLekara extends Component {
     let lis = this.state.listaSalaZaBrisanjeIzmjenu;
     const pretraga = this.state.pretraziPoljeKlinika;
     if (pretraga == "" || pretraga == undefined) {
-      for (var i = 0; i < lista.length; i++) {
-        if (lis.some(item => lista[i].id === item.id)) {
+     for (var i = 0; i < lista.length; i++) {
+      if(lis.some(item => lista[i].id === item.id)){
           res.push(
             <tr key={i}>
-          
+              {/* <td>{lista[i].id}</td> */}
 
               <td>{lista[i].ime}</td>
               <td>{lista[i].prezime}</td>
@@ -429,7 +600,7 @@ class ListaLekara extends Component {
               <td>
                 <Button
                   className="OdobrenZahtev"
-                  id={lista[i].email}
+                  id={lista[i].id}
                   onClick={e => this.handleIzmeni(e)}
                 >
                   Izmeni
@@ -441,7 +612,7 @@ class ListaLekara extends Component {
       }else{
         res.push(
           <tr key={i}>
-            
+            {/* <td>{lista[i].id}</td> */}
 
             <td>{lista[i].ime}</td>
             <td>{lista[i].prezime}</td>
@@ -464,7 +635,7 @@ class ListaLekara extends Component {
         if(lis.some(item => lista[i].id === item.id)){
           res.push(
             <tr key={i}>
-            
+              {/* <td>{lista[i].id}</td> */}
     
               <td>{lista[i].ime}</td>
               <td>{lista[i].prezime}</td>
@@ -484,7 +655,7 @@ class ListaLekara extends Component {
               <td>
                 <Button
                   className="OdobrenZahtev"
-                  id={lista[i].email}
+                  id={lista[i].id}
                   onClick={e => this.handleIzmeni(e)}
                 >
                   Izmeni
@@ -495,80 +666,28 @@ class ListaLekara extends Component {
         } else{
           res.push(
             <tr key={i}>
-              
+              {/* <td>{lista[i].id}</td> */}
     
               <td>{lista[i].ime}</td>
               <td>{lista[i].prezime}</td>
               <td>{lista[i].email}</td>
-
+    
               <td>{lista[i].telefon}</td>
-              <td></td>
-              <td></td>
+              <td>
+            
+              </td>
+              <td>
+        
+              </td>
             </tr>
           );
         }
       }
-    } else {
-      for (var i = 0; i < lista.length; i++) {
-        if (
-          lista[i].ime.toLowerCase().includes(pretraga.toLowerCase()) ||
-          lista[i].prezime.toLowerCase().includes(pretraga.toLowerCase())
-        ) {
-          if (lis.some(item => lista[i].id === item.id)) {
-            res.push(
-              <tr key={i}>
-                <td>{lista[i].id}</td>
-
-                <td>{lista[i].ime}</td>
-                <td>{lista[i].prezime}</td>
-                <td>{lista[i].email}</td>
-
-                <td>{lista[i].telefon}</td>
-                <td>
-                  <Button
-                    id={lista[i].email}
-                    onClick={e => this.obrisiLekara(e)}
-                  >
-                    Obrisi
-                  </Button>
-                  <Dialog
-                    ref={el => {
-                      this.dialog = el;
-                    }}
-                  ></Dialog>
-                </td>
-                <td>
-                  <Button
-                    className="OdobrenZahtev"
-                    id={lista[i].email}
-                    onClick={e => this.handleIzmeni(e)}
-                  >
-                    Izmeni
-                  </Button>
-                </td>
-              </tr>
-            );
-          } else {
-            res.push(
-              <tr key={i}>
-                <td>{lista[i].id}</td>
-
-                <td>{lista[i].ime}</td>
-                <td>{lista[i].prezime}</td>
-                <td>{lista[i].email}</td>
-
-                <td>{lista[i].telefon}</td>
-                <td></td>
-                <td></td>
-              </tr>
-            );
-          }
-        }
-      }
     }
-    return res;
   }
-}
+    return res;
+  }    
+
   handleChangePretraga = e => {
     e.preventDefault();
     this.setState({ [e.target.name]: e.target.value });
@@ -580,7 +699,8 @@ class ListaLekara extends Component {
     const lista = this.state.listaKlinika;
     const reirectToIzmeniLekar = this.state.reirectToIzmeniLekar;
     // console.log("LEKARRRRRRR : "  + this.state.emailLekara);
-    const emailLekara = this.state.emailLekara;
+    const idLekaraIzmjena = this.state.idLekaraIzmjena;
+    
     const token = this.state.token;
     if (reirectToIzmeniLekar === true) {
       return (
@@ -589,7 +709,7 @@ class ListaLekara extends Component {
             <Route
               path="/izmenaProfilaLekara"
               render={props => (
-                <IzmenaProfila {...props} email={emailLekara} token={token} />
+                <IzmenaProfila {...props} id={this.state.idLekaraIzmjena} token={token} />
               )}
             />
             <Redirect from="/" to="/izmenaProfilaLekara" />
@@ -656,6 +776,7 @@ class ListaLekara extends Component {
       </div>
     );
   }
+
 }
 
 export default ListaLekara;

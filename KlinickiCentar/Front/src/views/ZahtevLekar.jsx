@@ -111,8 +111,10 @@ class ZahtevLekar extends React.Component {
     });
   }
   zahtevOdmorOdsustvo() {
-
-    const url = "http://localhost:8025/api/odmorodsustvo/posaljiZahtevLekar";
+    if(this.state.opis === "" || this.state.opis === null){
+      this.props.handleClick("NISU SVA POLJA UNESENA");
+    }else{
+      const url = "http://localhost:8025/api/odmorodsustvo/posaljiZahtevLekar";
     axios
       .post(url,{ 
         datumOd : this.state.datumPocetka,
@@ -134,13 +136,11 @@ class ZahtevLekar extends React.Component {
           redirectToPocetna: true
           
         })
-        
-
+      
       });
-      // .catch(error => {
-      //   console.log("nije dobro odabran datum");
-
-      // });
+      
+    }
+    
   };
 
   render() {
@@ -150,7 +150,7 @@ class ZahtevLekar extends React.Component {
         <BrowserRouter>
           <Switch>
             <Route
-              path="/pocetnaStranicaLekara"
+              path="/pocetnaStranica"
               render={props => <PocetnaStranicaLekara {...props}
                   token={this.state.token}
                   email={this.state.email} 
@@ -160,7 +160,7 @@ class ZahtevLekar extends React.Component {
                   // emailPacijenta={this.state.emailPacijenta}  
                 />}
             />
-            <Redirect from="/" to="/pocetnaStranicaLekara" />
+            <Redirect from="/" to="/pocetnaStranica" />
           </Switch>
         </BrowserRouter>
       );

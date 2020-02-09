@@ -126,7 +126,7 @@ class ListaZahtevaOdmorOdsustvo extends Component {
         .then(response => {
           console.log("URL zahtev neki");
           console.log(response);
-
+          
           this.setState(
             {
               trenutniZahtev: response.data
@@ -146,6 +146,7 @@ class ListaZahtevaOdmorOdsustvo extends Component {
                 )
                 .then(response => {
                   console.log("ODOBRENOOOO");
+                  this.props.handleClick("POTVRDJEN ZAHTEV OD MEDICINSKE SESTRE");
                   console.log(response);
                   this.ucitajZahteveMedSestre();
                 })
@@ -161,12 +162,13 @@ class ListaZahtevaOdmorOdsustvo extends Component {
         });
     }
   };
+
   handleOdobrenLekar = e => {
     console.log("----------------------------");
-    console.log("HANDLE ODOBREN LEKAR" + e.currentTarget.id);
+    console.log("HANDLE ODOBREN LEKAR " + e.currentTarget.id);
     var zahtev = e.currentTarget.id;
     if (zahtev != "" && zahtev != null) {
-      const url1 = "http://localhost:8025/api/odmorodsustvo/zahtevL/" + zahtev;
+      var url1 = "http://localhost:8025/api/odmorodsustvo/zahtevL/" + zahtev;
       console.log(url1);
 
       axios
@@ -194,6 +196,7 @@ class ListaZahtevaOdmorOdsustvo extends Component {
                 )
                 .then(response => {
                   console.log("ODOBRENOOOO");
+                  this.props.handleClick("POTVRDJEN ZAHTEV OD LEKARA");
                   console.log(response);
                   this.ucitajZahteveLekara();
                 })
@@ -299,8 +302,8 @@ class ListaZahtevaOdmorOdsustvo extends Component {
           <td>{lista[i].imeMS}</td>
           <td>{lista[i].prezimeMS}</td>
           <td>{lista[i].emailMS}</td>
-          <td>{moment(lista[i].datumOd).format("DD.MM.YYYY HH:mm")}</td>
-          <td>{moment(lista[i].datumDo).format("DD.MM.YYYY HH:mm")}</td>
+          <td>{moment(lista[i].datumOd).format("DD.MM.YYYY.")}</td>
+          <td>{moment(lista[i].datumDo).format("DD.MM.YYYY.")}</td>
           <td>{lista[i].opis}</td>
           <td>{lista[i].tip}</td>
 
@@ -409,10 +412,14 @@ class ListaZahtevaOdmorOdsustvo extends Component {
       )
       .then(response => {
         console.log("Odbijanje uspelo! ");
+        this.props.handleClick("ODBIJEN ZAHTEV OD MEDICINSKE SESTRE");
+        
+        
         console.log(response.data);
         this.setState(
           {
-            isOpen: false
+            isOpen: false, 
+            razlogOdbijanja: ""
           },
           () => this.ucitajZahteveMedSestre()
         );
@@ -439,11 +446,13 @@ class ListaZahtevaOdmorOdsustvo extends Component {
       )
       .then(response => {
         console.log("Odbijanje uspelo! ");
+        this.props.handleClick("ODBIJEN ZAHTEV OD LEKARA");
         console.log(response.data);
 
         this.setState(
           {
-            isOpenL: false
+            isOpenL: false,
+            razlogOdbijanja: ""
           },
           () => this.ucitajZahteveLekara()
         );
@@ -480,47 +489,58 @@ class ListaZahtevaOdmorOdsustvo extends Component {
               LEKARI
             </Button>
           </Row>
+          
           <Row>
             {this.state.isOpen ? (
               <Card
+                
                 category="Odbijanje zahteva"
                 ctTableFullWidth
                 ctTableResponsive
                 content={
-                  <Grid>
-                    <Row>
-                      <Col>
-                        <label>Za: </label>
-                      </Col>
-                      <Col>
-                        <input
-                          type="text"
-                          name="emailMS"
-                          value={this.state.emailMS}
-                          disabled="disabled"
-                          onChange={this.handleChange}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <label>Razlog odbijanja:</label>
-                      </Col>
-                      <Col>
-                        <input
-                          type="text"
-                          name="razlogOdbijanja"
-                          defaultValue=""
-                          onChange={this.handleChange}
-                        />
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Button className="izlaz" onClick={() => this.posalji()}>
-                        Posalji
-                      </Button>
-                    </Row>
-                  </Grid>
+                  <div>
+                     <Table striped hover>
+                      <thead>
+                        <tr>
+                          <th>Za: </th>
+                          <th>Razlog odbijanja:</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td> 
+                            <input
+                              type="text"
+                              name="emailMS"
+                              value={this.state.emailMS}
+                              disabled="disabled"
+                              onChange={this.handleChange}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              name="razlogOdbijanja"
+                              defaultValue=""
+                              onChange={this.handleChange}
+                            />
+                          </td>
+                          <td>
+                          <Button className="dugmiciii" onClick={() => this.setState({isOpen: false})}>
+                            Odustani
+                          </Button>
+                          <Button className="dugmiciii" onClick={() => this.posalji()}>
+                            Posalji
+                          </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+
+                  </div>
+
+                  
                 }
               />
             ) : null}
@@ -528,47 +548,56 @@ class ListaZahtevaOdmorOdsustvo extends Component {
           <Row>
             {this.state.isOpenL ? (
               <Card
+                
                 category="Odbijanje zahteva"
                 ctTableFullWidth
                 ctTableResponsive
                 content={
-                  <Grid>
-                    <Row>
-                      <Col>
-                        <div>
-                          <label>Za: </label>
-                          <input
-                            type="text"
-                            name="emailMS"
-                            value={this.state.emailMS}
-                            disabled="disabled"
-                            onChange={this.handleChange}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Col>
-                        <div>
-                          <label>Razlog odbijanja:</label>
-                          <input
-                            type="text"
-                            name="razlogOdbijanja"
-                            defaultValue=""
-                            onChange={this.handleChange}
-                          />
-                        </div>
-                      </Col>
-                    </Row>
-                    <Row>
-                      <Button
-                        className="izlaz"
-                        onClick={() => this.posaljiLekar()}
-                      >
-                        Posalji
-                      </Button>
-                    </Row>
-                  </Grid>
+                  <div>
+                     <Table striped hover>
+                      <thead>
+                        <tr>
+                          <th>Za: </th>
+                          <th>Razlog odbijanja:</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td> 
+                            <input
+                              type="text"
+                              name="emailMS"
+                              value={this.state.emailMS}
+                              disabled="disabled"
+                              onChange={this.handleChange}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              name="razlogOdbijanja"
+                              defaultValue=""
+                              onChange={this.handleChange}
+                            />
+                          </td>
+                          <td>
+                          <Button className="dugmiciii"  onClick={() => this.setState({isOpenL: false})}>
+                            Odustani
+                          </Button>
+                          <Button
+                            className="dugmiciii"
+                            onClick={() => this.posaljiLekar()}
+                          >
+                            Posalji
+                          </Button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </Table>
+
+                  </div>
+                  
                 }
               />
             ) : null}

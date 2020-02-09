@@ -154,6 +154,8 @@ class PacijentNavbarLinks extends Component {
           this.listaPregledaOC();
         }
       );
+    } else {
+      this.listaPregledaOC();
     }
   }
   listaPregledaOC() {

@@ -418,7 +418,7 @@ class PocetnaStranicaLekara extends React.Component {
             {this.renderRedirect()}
               <div onClick={this.handleListaPacijenata}>
                 <StatsCard
-                  bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
+                  //bigIcon={<div> <img src = { kalendarSlika} width="30" height="20" /></div>}
                   // statsText="Lista pacijenata"
                   // statsValue="105GB"
                   // statsIcon={<i className="fa fa-refresh" />}
@@ -431,7 +431,7 @@ class PocetnaStranicaLekara extends React.Component {
             {this.renderRedirect()}
               <div onClick={this.handleProfilLekara}>
                 <StatsCard
-                   bigIcon={<div> <img src = { slikaPregledi} width="30" height="20" /></div>}
+                 //  bigIcon={<div> <img src = { slikaPregledi} width="30" height="20" /></div>}
                   // statsText="Lista pacijenata"
                   // statsValue="105GB"
                   // statsIcon={<i className="fa fa-refresh" />}
@@ -444,7 +444,7 @@ class PocetnaStranicaLekara extends React.Component {
               {this.renderRedirect()}
               <div onClick={this.handleZahtevZaGodOdmor}>
                 <StatsCard
-                   bigIcon={<div> <img src = { Slikalekari} width="30" height="20" /></div>}
+                  // bigIcon={<div> <img src = { Slikalekari} width="30" height="20" /></div>}
                   // statsText="Lista pacijenata"
                   // statsValue="105GB"
                   // statsIcon={<i className="fa fa-refresh" />}

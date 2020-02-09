@@ -99,16 +99,20 @@ class AdministatorKlinike extends Component {
     var level;
     var klasa = "pe-7s-gift";
     if (
-      poruka == "USPESNA IZMENA" ||
-      poruka == "ZAHTEV JE POTVRDJEN" ||
-      poruka == "OCENJEN LEKAR" ||
-      poruka == "OCENJENA KLINIKA" ||
-      poruka == "ZAHTEV JE POSLAT" ||
-      poruka == "USPESNA REZERVACIJA"
+      poruka === "USPESNA IZMENA" ||
+      poruka === "ZAHTEV JE POTVRDJEN" ||
+      poruka === "OCENJEN LEKAR" ||
+      poruka === "OCENJENA KLINIKA" ||
+      poruka === "ZAHTEV JE POSLAT" ||
+      poruka === "USPESNA REZERVACIJA" ||
+      poruka === "ODBIJEN ZAHTEV OD LEKARA" ||
+      poruka === "ODBIJEN ZAHTEV OD MEDICINSKE SESTRE" ||
+      poruka === "POTVRDJEN ZAHTEV OD MEDICINSKE SESTRE" ||
+      poruka === "POTVRDJEN ZAHTEV OD LEKARA"
     ) {
       level = "success";
       klasa = "pe-7s-check";
-    } else if (poruka == "ZAHTEV JE ODBIJEN") {
+    } else if (poruka === "ZAHTEV JE ODBIJEN") {
       level = "error";
       klasa = "pe-7s-close";
     }

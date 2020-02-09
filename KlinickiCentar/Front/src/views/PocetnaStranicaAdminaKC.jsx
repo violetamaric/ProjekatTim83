@@ -328,6 +328,7 @@ class KlinickiCentarPocetna extends Component {
             .then(response => {
               console.log("Dodavanje uspelo! ");
               console.log(response.data.id);
+              this.props.handleClick("USPESNO DODATA KLINIKA");
               this.listaKlinika();
 
 
@@ -481,6 +482,7 @@ class KlinickiCentarPocetna extends Component {
             .then(response => {
               console.log("***********************************Dodavanje uspelo! ");
               console.log(response.data);
+              this.props.handleClick("USPESNO DODAT ADMINISTRATOR KLINIKE");
               this.listaAdministratoraKlinika();
 
             })
@@ -572,6 +574,7 @@ class KlinickiCentarPocetna extends Component {
             .then(response => {
               console.log("Dodavanje uspelo! ");
               console.log(response.data);
+              this.props.handleClick("USPESNO DODAT ADMINISTRATOR KLINICKOG CENTRA");
               this.listaAdministratora();
 
             })
@@ -676,9 +679,9 @@ class KlinickiCentarPocetna extends Component {
                       }, this.config)
                       .then(response => {
                         console.log(response.data);
-                        this.setState({
-                          listaKlinika: response.data
-                        }, ()=> this.listaKlinika())
+                        this.props.handleClick("IZMENJENA KLINIKA");
+                        this.listaKlinika();
+                        
                         
 
                       })
@@ -798,7 +801,9 @@ class KlinickiCentarPocetna extends Component {
                 .then(response => {
                   console.log("izmena uspela");
                   console.log(response.data);
+                  this.props.handleClick("IZMENJEN ADMINISTRATOR KLINIKE");
                   this.listaAdministratoraKlinika();
+
 
                 })
                 .catch(error => {
@@ -898,6 +903,7 @@ class KlinickiCentarPocetna extends Component {
                 }, this.config)
                 .then(response => {
                   console.log(response.data);
+                  this.props.handleClick("IZMENJEN ADMINISTRATOR KLINICKOG CENTRA");
                   this.listaAdministratora();
           
                 })

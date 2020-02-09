@@ -39,6 +39,7 @@ class IstorijaPOPacijenta extends Component {
       lbo: "",
       pregledi: [],
       operacije: [],
+      lekariNaOperaciji: [],
       OnazivKl: "",
       OimeL: "",
       OprezimeL: "",
@@ -387,6 +388,7 @@ class IstorijaPOPacijenta extends Component {
                           9
                         </Button>
                         <Button
+                          id="btn10"
                           fill
                           bsStyle="success"
                           value="10"
@@ -625,6 +627,7 @@ class IstorijaPOPacijenta extends Component {
 
     for (var i = 0; i < lista.length; i++) {
       if (lista[i].status == 3) {
+        const v2 = "btnOceniKliniku" + i;
         res.push(
           <tr key={i}>
             <td key={lista[i].nazivKl}>{lista[i].nazivKl}</td>
@@ -636,6 +639,7 @@ class IstorijaPOPacijenta extends Component {
             <td>
               <OverlayTrigger placement="top" overlay={oceniK}>
                 <Button
+                  id={v2}
                   bsStyle="info"
                   simple
                   type="button"
@@ -801,21 +805,73 @@ class IstorijaPOPacijenta extends Component {
 
     return res;
   }
-  ispisLekaraOperacija(operacija) {
-    let lista = this.state.operacije;
+  listaLekaraDijalog() {
+    console.log(this.state.lekariNaOperaciji);
+
     var res = [];
-    operacija.listaLekara.map(lekar => {
+    this.state.lekariNaOperaciji.map(lekar => {
+      console.log(lekar.ime);
       res.push(
-        <div>
-          {lekar.ime} {lekar.prezime}
-        </div>
+        <tr>
+          <td>{lekar.ime}</td>
+          <td>{lekar.prezime}</td>
+        </tr>
       );
     });
     return res;
   }
+  ispisLekaraOperacija = e => {
+    var operacijaID = e.currentTarget.value;
+    var url =
+      "http://localhost:8025/api/operacije/lekariNaOperaciji/" + operacijaID;
+    var config = {
+      headers: {
+        Authorization: "Bearer " + this.state.token,
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      }
+    };
+    axios
+      .get(url, config)
+      .then(Response => {
+        this.setState(
+          {
+            lekariNaOperaciji: Response.data
+          },
+          () => {
+            this.dialog.show({
+              title: "Lekari na operaciji",
+              body: [
+                <div>
+                  <Table striped hover>
+                    <thead className="thead-dark">
+                      <tr>
+                        <th id="Naziv">Ime</th>
+                        <th id="Adresa"> Prezime</th>
+                      </tr>
+                    </thead>
+                    <tbody>{this.listaLekaraDijalog()}</tbody>
+                  </Table>
+                </div>
+              ],
+              actions: [Dialog.CancelAction()],
+              bsSize: "medium",
+              onHide: dialog => {
+                dialog.hide();
+              }
+            });
+          }
+        );
+      })
+      .catch(error => {
+        console.log("Nisu preuzeti termini lekara");
+      });
+  };
   listaOperacija() {
     let res = [];
-
+    const prikaziLekareNaOperaciji = (
+      <Tooltip id="remove_tooltip">Vidi Lekare</Tooltip>
+    );
     // const pretraga = this.state.pretraziPoljeKlinika;
     // const oc = this.state.ocenaKlinike;
     //
@@ -829,7 +885,25 @@ class IstorijaPOPacijenta extends Component {
       res.push(
         <tr key={i}>
           <td key={lista[i].nazivKl}>{lista[i].nazivKl}</td>
-          <td>{this.ispisLekaraOperacija(lista[i])}</td>
+          <td>
+            <OverlayTrigger placement="top" overlay={prikaziLekareNaOperaciji}>
+              <Button
+                bsStyle="info"
+                simple
+                type="button"
+                bsSize="sm"
+                value={lista[i].id}
+                onClick={e => this.ispisLekaraOperacija(e)}
+              >
+                <i className="pe-7s-id text-info" />
+              </Button>
+            </OverlayTrigger>
+            <Dialog
+              ref={el => {
+                this.dialog = el;
+              }}
+            ></Dialog>
+          </td>
           <td key={lista[i].nazivTP}>{lista[i].tipOperacije}</td>
           <td key={lista[i].cena}>{lista[i].cena} RSD</td>
           {/* <td>
